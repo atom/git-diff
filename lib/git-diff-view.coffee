@@ -3,6 +3,8 @@ Subscriber = require 'subscriber'
 
 module.exports =
 class GitDiffView
+  _.extend @prototype, Subscriber
+
   constructor: (@editor) ->
     @gutter = @editor.gutter
     @diffs = {}
@@ -70,5 +72,3 @@ class GitDiffView
         for row in [newStart...newStart + newLines]
           linesHighlighted += @gutter.find(".line-number[lineNumber=#{row - 1}]").addClass('git-line-modified').length
     @gutter.hasGitLineDiffs = linesHighlighted > 0
-
-_.extend GitDiffView.prototype, Subscriber
