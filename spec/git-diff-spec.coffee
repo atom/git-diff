@@ -1,5 +1,4 @@
-RootView = require 'root-view'
-_ = require 'underscore'
+{_, RootView} = require 'atom-api'
 
 describe "GitDiff package", ->
   editor = null
