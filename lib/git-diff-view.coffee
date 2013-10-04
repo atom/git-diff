@@ -51,7 +51,7 @@ class GitDiffView
 
   removeDiffs: =>
     if @gutter.hasGitLineDiffs
-      @gutter.find('.line-number').removeClass('git-line-added git-line-modified git-line-removed')
+      @gutter.removeClassFromAllLines('git-line-added git-line-modified git-line-removed')
       @gutter.hasGitLineDiffs = false
 
   renderDiffs: =>
@@ -60,14 +60,14 @@ class GitDiffView
     @removeDiffs()
 
     hunks = @diffs[@editor.getPath()] ? []
-    linesHighlighted = 0
+    linesHighlighted = false
     for {oldStart, newStart, oldLines, newLines} in hunks
       if oldLines is 0 and newLines > 0
         for row in [newStart...newStart + newLines]
-          linesHighlighted += @gutter.find(".line-number[lineNumber=#{row - 1}]").addClass('git-line-added').length
+          linesHighlighted |= !!@gutter.addClassToLine(row - 1, 'git-line-added')
       else if newLines is 0 and oldLines > 0
-        linesHighlighted += @gutter.find(".line-number[lineNumber=#{newStart - 1}]").addClass('git-line-removed').length
+        linesHighlighted |= !!@gutter.addClassToLine(newStart - 1, 'git-line-removed')
       else
         for row in [newStart...newStart + newLines]
-          linesHighlighted += @gutter.find(".line-number[lineNumber=#{row - 1}]").addClass('git-line-modified').length
-    @gutter.hasGitLineDiffs = linesHighlighted > 0
+          linesHighlighted |= !!@gutter.addClassToLine(row - 1, 'git-line-modified')
+    @gutter.hasGitLineDiffs = linesHighlighted
