@@ -16,7 +16,7 @@ describe "GitDiff package", ->
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
       expect(editor.find('.git-line-modified').length).toBe 1
-      expect(editor.find('.git-line-modified').attr('lineNumber')).toBe '0'
+      expect(editor.find('.git-line-modified')).toHaveClass('line-number-0')
 
   describe "when the editor has added lines", ->
     it "highlights the added lines", ->
@@ -26,7 +26,7 @@ describe "GitDiff package", ->
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
       expect(editor.find('.git-line-added').length).toBe 1
-      expect(editor.find('.git-line-added').attr('lineNumber')).toBe '1'
+      expect(editor.find('.git-line-added')).toHaveClass('line-number-1')
 
   describe "when the editor has removed lines", ->
     it "highlights the line preceeding the deleted lines", ->
@@ -35,7 +35,7 @@ describe "GitDiff package", ->
       editor.deleteLine()
       advanceClock(editor.getBuffer().stoppedChangingDelay)
       expect(editor.find('.git-line-removed').length).toBe 1
-      expect(editor.find('.git-line-removed').attr('lineNumber')).toBe '4'
+      expect(editor.find('.git-line-removed')).toHaveClass('line-number-4')
 
   describe "when a modified line is restored to the HEAD version contents", ->
     it "removes the diff highlight", ->
@@ -58,4 +58,4 @@ describe "GitDiff package", ->
       waitsFor -> nextTick
       runs ->
         expect(editor.find('.git-line-modified').length).toBe 1
-        expect(editor.find('.git-line-modified').attr('lineNumber')).toBe '0'
+        expect(editor.find('.git-line-modified')).toHaveClass('line-number-0')
