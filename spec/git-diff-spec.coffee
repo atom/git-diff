@@ -53,6 +53,7 @@ describe "GitDiff package", ->
       buffer = project.buildBuffer(path)
       buffer.setText("Some different text.")
       rootView.open('sample.txt')
+      editor = rootView.getActiveView()
       nextTick = false
       _.nextTick -> nextTick = true
       waitsFor -> nextTick
