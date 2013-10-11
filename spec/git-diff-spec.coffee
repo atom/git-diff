@@ -1,18 +1,19 @@
 path = require 'path'
 {_, fs, RootView} = require 'atom'
 
-fixturesPath = path.join(__dirname, 'fixtures')
+repoPath = path.join(__dirname, 'fixtures', 'working-dir')
 
 beforeEach ->
-  fs.move(path.join(fixturesPath, 'git.git'), path.join(fixturesPath, '.git'))
+  fs.move(path.join(repoPath, 'git.git'), path.join(repoPath, '.git'))
 
 afterEach ->
-  fs.move(path.join(fixturesPath, '.git'), path.join(fixturesPath, 'git.git'))
+  fs.move(path.join(repoPath, '.git'), path.join(repoPath, 'git.git'))
 
 describe "GitDiff package", ->
   editor = null
 
   beforeEach ->
+    project.setPath(repoPath)
     window.rootView = new RootView
     rootView.attachToDom()
     rootView.open('sample.js')
