@@ -1,4 +1,13 @@
-{_, RootView} = require 'atom'
+path = require 'path'
+{_, fs, RootView} = require 'atom'
+
+fixturesPath = path.join(__dirname, 'fixtures')
+
+beforeEach ->
+  fs.move(path.join(fixturesPath, 'git.git'), path.join(fixturesPath, '.git'))
+
+afterEach ->
+  fs.move(path.join(fixturesPath, '.git'), path.join(fixturesPath, 'git.git'))
 
 describe "GitDiff package", ->
   editor = null
@@ -49,8 +58,8 @@ describe "GitDiff package", ->
 
   describe "when a modified file is opened", ->
     it "highlights the changed lines", ->
-      path = project.resolve('sample.txt')
-      buffer = project.buildBuffer(path)
+      filePath = project.resolve('sample.txt')
+      buffer = project.buildBuffer(filePath)
       buffer.setText("Some different text.")
       rootView.open('sample.txt')
       editor = rootView.getActiveView()
