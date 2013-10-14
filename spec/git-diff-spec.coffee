@@ -1,24 +1,22 @@
 path = require 'path'
 {_, fs, RootView} = require 'atom'
 
-repoPath = path.join(__dirname, 'fixtures', 'working-dir')
-
-beforeEach ->
-  fs.move(path.join(repoPath, 'git.git'), path.join(repoPath, '.git'))
-
-afterEach ->
-  fs.move(path.join(repoPath, '.git'), path.join(repoPath, 'git.git'))
-
 describe "GitDiff package", ->
-  editor = null
+  [editor, projectPath] = []
 
   beforeEach ->
-    project.setPath(repoPath)
+    projectPath = project.resolve('working-dir')
+    fs.move(path.join(projectPath, 'git.git'), path.join(projectPath, '.git'))
+    project.setPath(projectPath)
+
     window.rootView = new RootView
     rootView.attachToDom()
     rootView.open('sample.js')
     atom.activatePackage('git-diff')
     editor = rootView.getActiveView()
+
+  afterEach ->
+    fs.move(path.join(projectPath, '.git'), path.join(projectPath, 'git.git'))
 
   describe "when the editor has modified lines", ->
     it "highlights the modified lines", ->
