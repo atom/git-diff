@@ -11,7 +11,7 @@ describe "GitDiff package", ->
 
     window.rootView = new RootView
     rootView.attachToDom()
-    rootView.open('sample.js')
+    rootView.openSync('sample.js')
     atom.activatePackage('git-diff')
     editor = rootView.getActiveView()
 
@@ -60,7 +60,7 @@ describe "GitDiff package", ->
       filePath = project.resolve('sample.txt')
       buffer = project.buildBuffer(filePath)
       buffer.setText("Some different text.")
-      rootView.open('sample.txt')
+      rootView.openSync('sample.txt')
       editor = rootView.getActiveView()
       nextTick = false
       _.nextTick -> nextTick = true
