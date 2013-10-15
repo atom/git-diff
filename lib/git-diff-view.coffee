@@ -1,8 +1,10 @@
-{_, Subscriber} = require 'atom'
+{_} = require 'atom'
+{Subscriber} = require 'emissary'
 
 module.exports =
 class GitDiffView
-  _.extend @prototype, Subscriber
+  Subscriber.includeInto(this)
+
   classes: ['git-line-added', 'git-line-modified', 'git-line-removed']
 
   constructor: (@editor) ->
