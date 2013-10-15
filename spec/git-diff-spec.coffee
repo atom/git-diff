@@ -58,7 +58,7 @@ describe "GitDiff package", ->
   describe "when a modified file is opened", ->
     it "highlights the changed lines", ->
       filePath = project.resolve('sample.txt')
-      buffer = project.buildBuffer(filePath)
+      buffer = project.bufferForPathSync(filePath)
       buffer.setText("Some different text.")
       rootView.openSync('sample.txt')
       editor = rootView.getActiveView()
