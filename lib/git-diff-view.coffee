@@ -1,4 +1,3 @@
-{_} = require 'atom'
 {Subscriber} = require 'emissary'
 
 module.exports =
@@ -41,7 +40,7 @@ class GitDiffView
       @buffer.on 'contents-modified', @updateDiffs
 
   scheduleUpdate: ->
-    _.nextTick(@updateDiffs)
+    setImmediate(@updateDiffs)
 
   updateDiffs: =>
     return unless @buffer?

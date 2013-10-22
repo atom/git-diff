@@ -1,5 +1,5 @@
 path = require 'path'
-{_, fs, RootView} = require 'atom'
+{fs, RootView} = require 'atom'
 
 describe "GitDiff package", ->
   [editor, projectPath] = []
@@ -63,7 +63,7 @@ describe "GitDiff package", ->
       rootView.openSync('sample.txt')
       editor = rootView.getActiveView()
       nextTick = false
-      _.nextTick -> nextTick = true
+      setImmediate -> nextTick = true
       waitsFor -> nextTick
       runs ->
         expect(editor.find('.git-line-modified').length).toBe 1
