@@ -12,10 +12,10 @@ class GitDiffView
 
     @subscribe @editor, 'editor:path-changed', @subscribeToBuffer
     @subscribe @editor, 'editor:display-updated', @renderDiffs
-    @subscribe project.getRepo(), 'statuses-changed', =>
+    @subscribe atom.project.getRepo(), 'statuses-changed', =>
       @diffs = {}
       @scheduleUpdate()
-    @subscribe project.getRepo(), 'status-changed', (path) =>
+    @subscribe atom.project.getRepo(), 'status-changed', (path) =>
       delete @diffs[path]
       @scheduleUpdate() if path is @editor.getPath()
 
@@ -49,7 +49,7 @@ class GitDiffView
 
   generateDiffs: ->
     if path = @buffer.getPath()
-      @diffs[path] = project.getRepo()?.getLineDiffs(path, @buffer.getText())
+      @diffs[path] = atom.project.getRepo()?.getLineDiffs(path, @buffer.getText())
 
   removeDiffs: =>
     if @gutter.hasGitLineDiffs

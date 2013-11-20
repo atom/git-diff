@@ -5,15 +5,15 @@ describe "GitDiff package", ->
   [editor, projectPath] = []
 
   beforeEach ->
-    projectPath = project.resolve('working-dir')
+    projectPath = atom.project.resolve('working-dir')
     fs.move(path.join(projectPath, 'git.git'), path.join(projectPath, '.git'))
-    project.setPath(projectPath)
+    atom.project.setPath(projectPath)
 
-    window.rootView = new RootView
-    rootView.attachToDom()
-    rootView.openSync('sample.js')
-    atom.activatePackage('git-diff')
-    editor = rootView.getActiveView()
+    atom.rootView = new RootView
+    atom.rootView.attachToDom()
+    atom.rootView.openSync('sample.js')
+    atom.packages.activatePackage('git-diff')
+    editor = atom.rootView.getActiveView()
 
   afterEach ->
     fs.move(path.join(projectPath, '.git'), path.join(projectPath, 'git.git'))
@@ -60,8 +60,8 @@ describe "GitDiff package", ->
       filePath = project.resolve('sample.txt')
       buffer = project.bufferForPathSync(filePath)
       buffer.setText("Some different text.")
-      rootView.openSync('sample.txt')
-      editor = rootView.getActiveView()
+      atom.rootView.openSync('sample.txt')
+      editor = atom.rootView.getActiveView()
       nextTick = false
       setImmediate -> nextTick = true
       waitsFor -> nextTick
