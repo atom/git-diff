@@ -6,7 +6,7 @@ describe "GitDiff package", ->
 
   beforeEach ->
     projectPath = atom.project.resolve('working-dir')
-    fs.move(path.join(projectPath, 'git.git'), path.join(projectPath, '.git'))
+    fs.moveSync(path.join(projectPath, 'git.git'), path.join(projectPath, '.git'))
     atom.project.setPath(projectPath)
 
     atom.rootView = new RootView
@@ -16,7 +16,7 @@ describe "GitDiff package", ->
     editor = atom.rootView.getActiveView()
 
   afterEach ->
-    fs.move(path.join(projectPath, '.git'), path.join(projectPath, 'git.git'))
+    fs.moveSync(path.join(projectPath, '.git'), path.join(projectPath, 'git.git'))
 
   describe "when the editor has modified lines", ->
     it "highlights the modified lines", ->
