@@ -57,8 +57,8 @@ describe "GitDiff package", ->
 
   describe "when a modified file is opened", ->
     it "highlights the changed lines", ->
-      filePath = project.resolve('sample.txt')
-      buffer = project.bufferForPathSync(filePath)
+      filePath = atom.project.resolve('sample.txt')
+      buffer = atom.project.bufferForPathSync(filePath)
       buffer.setText("Some different text.")
       atom.rootView.openSync('sample.txt')
       editor = atom.rootView.getActiveView()
