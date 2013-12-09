@@ -68,3 +68,25 @@ describe "GitDiff package", ->
       runs ->
         expect(editor.find('.git-line-modified').length).toBe 1
         expect(editor.find('.git-line-modified')).toHaveClass('line-number-0')
+
+  describe "move-to-next-diff/move-to-previous-diff events", ->
+    it "moves the cursor to first character of the next/previous diff line", ->
+      editor.insertText('a')
+      editor.setCursorBufferPosition([5])
+      editor.deleteLine()
+      advanceClock(editor.getBuffer().stoppedChangingDelay)
+
+      editor.setCursorBufferPosition([0])
+      editor.trigger 'git-diff:move-to-next-diff'
+      expect(editor.getCursorBufferPosition()).toEqual [4, 4]
+
+      spyOn(atom, 'beep')
+      editor.trigger 'git-diff:move-to-next-diff'
+      expect(atom.beep.callCount).toBe 1
+
+      editor.trigger 'git-diff:move-to-previous-diff'
+      expect(editor.getCursorBufferPosition()).toEqual [0, 0]
+
+      atom.beep.reset()
+      editor.trigger 'git-diff:move-to-previous-diff'
+      expect(atom.beep.callCount).toBe 1
