@@ -25,6 +25,37 @@ class GitDiffView
       @unsubscribe()
       @unsubscribeFromBuffer()
 
+    @editor.command 'git-diff:move-to-next-diff', => @moveToNextDiff()
+    @editor.command 'git-diff:move-to-previous-diff', => @moveToPreviousDiff()
+
+  moveToNextDiff: ->
+    cursorLineNumber = @editor.getCursorBufferPosition().row + 1
+    nextDiffLineNumber = null
+    hunks = @diffs[@editor.getPath()] ? []
+    for {newStart} in hunks when newStart > cursorLineNumber
+      if nextDiffLineNumber?
+        nextDiffLineNumber = Math.min(newStart - 1, nextDiffLineNumber)
+      else
+        nextDiffLineNumber = newStart - 1
+
+    @moveToLineNumber(nextDiffLineNumber)
+
+  moveToPreviousDiff: ->
+    cursorLineNumber = @editor.getCursorBufferPosition().row + 1
+    previousDiffLineNumber = -1
+    hunks = @diffs[@editor.getPath()] ? []
+    for {newStart} in hunks when newStart < cursorLineNumber
+      previousDiffLineNumber = Math.max(newStart - 1, previousDiffLineNumber)
+
+    @moveToLineNumber(previousDiffLineNumber)
+
+  moveToLineNumber: (lineNumber=-1) ->
+    if lineNumber >= 0
+      @editor.setCursorBufferPosition([lineNumber, 0])
+      @editor.moveCursorToFirstCharacterOfLine()
+    else
+      atom.beep()
+
   unsubscribeFromBuffer: ->
     if @buffer?
       @removeDiffs()
