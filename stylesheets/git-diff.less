@@ -1,13 +1,20 @@
-@import "ui-variables";
+@import "syntax-variables";
 
-.git-line-modified {
-  color: @text-color-warning;
-}
+.editor {
+  .gutter .line-number {
+    &.git-line-modified {
+      border-left: 2px solid @syntax-color-modified;
+      padding-left: ~"calc(0.5em - 2px)";
+    }
 
-.git-line-added {
-  color: @text-color-info;
-}
+    &.git-line-added {
+      border-left: 2px solid @syntax-color-added;
+      padding-left: ~"calc(0.5em - 2px)";
+    }
 
-.git-line-removed {
-  color: @text-color-error;
+    &.git-line-removed {
+      border-left: 2px solid @syntax-color-removed;
+      padding-left: ~"calc(0.5em - 2px)";
+    }
+  }
 }
