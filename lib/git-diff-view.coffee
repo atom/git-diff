@@ -6,12 +6,12 @@ class GitDiffView
 
   classes: ['git-line-added', 'git-line-modified', 'git-line-removed']
 
-  constructor: (@editor) ->
-    @gutter = @editor.gutter
+  constructor: (@editorView) ->
+    {@editor, @gutter} = @editorView
     @diffs = {}
 
-    @subscribe @editor, 'editor:path-changed', @subscribeToBuffer
-    @subscribe @editor, 'editor:display-updated', @renderDiffs
+    @subscribe @editorView, 'editor:path-changed', @subscribeToBuffer
+    @subscribe @editorView, 'editor:display-updated', @renderDiffs
     @subscribe atom.project.getRepo(), 'statuses-changed', =>
       @diffs = {}
       @scheduleUpdate()
@@ -21,12 +21,14 @@ class GitDiffView
 
     @subscribeToBuffer()
 
-    @subscribe @editor, 'editor:will-be-removed', =>
+    @subscribe @editorView, 'editor:will-be-removed', =>
       @unsubscribe()
       @unsubscribeFromBuffer()
 
-    @editor.command 'git-diff:move-to-next-diff', => @moveToNextDiff()
-    @editor.command 'git-diff:move-to-previous-diff', => @moveToPreviousDiff()
+    @subscribeToCommand @editorView, 'git-diff:move-to-next-diff', =>
+      @moveToNextDiff()
+    @subscribeToCommand @editorView, 'git-diff:move-to-previous-diff', =>
+      @moveToPreviousDiff()
 
   moveToNextDiff: ->
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
