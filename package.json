@@ -8,6 +8,6 @@
     "atom": "*"
   },
   "dependencies": {
-    "emissary": "~0.9.0"
+    "emissary": "1.x"
   }
 }
