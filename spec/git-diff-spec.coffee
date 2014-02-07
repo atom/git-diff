@@ -12,9 +12,11 @@ describe "GitDiff package", ->
     atom.workspaceView = new WorkspaceView
     atom.workspaceView.attachToDom()
     atom.workspaceView.openSync('sample.js')
-    atom.packages.activatePackage('git-diff')
     editorView = atom.workspaceView.getActiveView()
     {editor} = editorView
+
+    waitsForPromise ->
+      atom.packages.activatePackage('git-diff')
 
   afterEach ->
     fs.moveSync(path.join(projectPath, '.git'), path.join(projectPath, 'git.git'))
