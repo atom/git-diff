@@ -9,6 +9,8 @@
     "atom": "*"
   },
   "dependencies": {
-    "emissary": "1.x"
+    "emissary": "1.x",
+    "fs-plus": "2.x",
+    "temp": "~0.6.0"
   }
 }

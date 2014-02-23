@@ -1,11 +1,14 @@
 path = require 'path'
-{fs, WorkspaceView} = require 'atom'
+{WorkspaceView} = require 'atom'
+temp = require 'temp'
+fs = require 'fs-plus'
 
 describe "GitDiff package", ->
   [editor, editorView, projectPath] = []
 
   beforeEach ->
-    projectPath = atom.project.resolve('working-dir')
+    projectPath = temp.mkdirSync('git-diff-spec-')
+    fs.copySync(path.join(__dirname, 'fixtures', 'working-dir'), projectPath)
     fs.moveSync(path.join(projectPath, 'git.git'), path.join(projectPath, '.git'))
     atom.project.setPath(projectPath)
 
@@ -17,9 +20,6 @@ describe "GitDiff package", ->
 
     waitsForPromise ->
       atom.packages.activatePackage('git-diff')
-
-  afterEach ->
-    fs.moveSync(path.join(projectPath, '.git'), path.join(projectPath, 'git.git'))
 
   describe "when the editor has modified lines", ->
     it "highlights the modified lines", ->
