@@ -1,7 +1,7 @@
 path = require 'path'
 {WorkspaceView} = require 'atom'
-temp = require 'temp'
 fs = require 'fs-plus'
+temp = require 'temp'
 
 describe "GitDiff package", ->
   [editor, editorView, projectPath] = []
