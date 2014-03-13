@@ -1,4 +1,6 @@
 @import "syntax-variables";
+@import "octicon-utf-codes";
+@import "octicon-mixins";
 
 .editor {
   .gutter .line-number {
@@ -15,6 +17,34 @@
     &.git-line-removed {
       border-left: 2px solid @syntax-color-removed;
       padding-left: ~"calc(0.5em - 2px)";
+    }
+  }
+  .gutter.git-diff-icon .line-number {
+    width: 100%;
+    border-left: none;
+    padding-left: 0.4em;
+
+    &:before {
+     .octicon-font();
+      display: inline-block;
+      width: 14px;
+      content: " ";
+      padding-right: 6px;
+    }
+
+    &.git-line-modified:before {
+      content: @primitive-dot;
+      color: @syntax-color-modified;
+    }
+
+    &.git-line-added:before {
+      content: @plus;
+      color: @syntax-color-added;
+    }
+
+    &.git-line-removed:before {
+      content: @dash;
+      color: @syntax-color-removed;
     }
   }
 }
