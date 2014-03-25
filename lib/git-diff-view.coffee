@@ -30,6 +30,12 @@ class GitDiffView
     @subscribeToCommand @editorView, 'git-diff:move-to-previous-diff', =>
       @moveToPreviousDiff()
 
+    @subscribe atom.config.observe 'git-diff.showIconsInEditorGutter', =>
+      if atom.config.get 'git-diff.showIconsInEditorGutter'
+        @gutter.addClass('git-diff-icon')
+      else
+        @gutter.removeClass('git-diff-icon')
+
   moveToNextDiff: ->
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
     nextDiffLineNumber = null
