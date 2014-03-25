@@ -27,9 +27,13 @@
     &:before {
      .octicon-font();
       display: inline-block;
-      width: 14px;
+      position: relative;
+      // Centering the icons while not changing the gutter height is hard.
+      top: -.04em;
+      width: 1em;
+      height: 1em;
       content: " ";
-      padding-right: 6px;
+      padding-right: 0.4em;
     }
 
     &.git-line-modified:before {
