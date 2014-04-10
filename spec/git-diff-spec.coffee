@@ -83,13 +83,21 @@ describe "GitDiff package", ->
       editorView.trigger 'git-diff:move-to-next-diff'
       expect(editor.getCursorBufferPosition()).toEqual [4, 4]
 
-      spyOn(atom, 'beep')
-      editorView.trigger 'git-diff:move-to-next-diff'
-      expect(atom.beep.callCount).toBe 1
-
       editorView.trigger 'git-diff:move-to-previous-diff'
       expect(editor.getCursorBufferPosition()).toEqual [0, 0]
 
-      atom.beep.reset()
+    it "wraps around to the first/last diff in the file", ->
+      editor.insertText('a')
+      editor.setCursorBufferPosition([5])
+      editor.deleteLine()
+      advanceClock(editor.getBuffer().stoppedChangingDelay)
+
+      editor.setCursorBufferPosition([0])
+      editorView.trigger 'git-diff:move-to-next-diff'
+      expect(editor.getCursorBufferPosition()).toEqual [4, 4]
+
+      editorView.trigger 'git-diff:move-to-next-diff'
+      expect(editor.getCursorBufferPosition()).toEqual [0, 0]
+
       editorView.trigger 'git-diff:move-to-previous-diff'
-      expect(atom.beep.callCount).toBe 1
+      expect(editor.getCursorBufferPosition()).toEqual [4, 4]

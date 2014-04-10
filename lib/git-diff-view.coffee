@@ -39,21 +39,33 @@ class GitDiffView
   moveToNextDiff: ->
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
     nextDiffLineNumber = null
+    firstDiffLineNumber = null
     hunks = @diffs[@editor.getPath()] ? []
-    for {newStart} in hunks when newStart > cursorLineNumber
-      if nextDiffLineNumber?
+    for {newStart} in hunks
+      if newStart > cursorLineNumber
+        nextDiffLineNumber ?= newStart - 1
         nextDiffLineNumber = Math.min(newStart - 1, nextDiffLineNumber)
-      else
-        nextDiffLineNumber = newStart - 1
+
+      firstDiffLineNumber ?= newStart - 1
+      firstDiffLineNumber = Math.min(newStart - 1, firstDiffLineNumber)
+
+    # Wrap around to the first diff in the file
+    nextDiffLineNumber = firstDiffLineNumber unless nextDiffLineNumber?
 
     @moveToLineNumber(nextDiffLineNumber)
 
   moveToPreviousDiff: ->
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
     previousDiffLineNumber = -1
+    lastDiffLineNumber = -1
     hunks = @diffs[@editor.getPath()] ? []
-    for {newStart} in hunks when newStart < cursorLineNumber
-      previousDiffLineNumber = Math.max(newStart - 1, previousDiffLineNumber)
+    for {newStart} in hunks
+      if newStart < cursorLineNumber
+        previousDiffLineNumber = Math.max(newStart - 1, previousDiffLineNumber)
+      lastDiffLineNumber = Math.max(newStart - 1, lastDiffLineNumber)
+
+    # Wrap around to the last diff in the file
+    previousDiffLineNumber = lastDiffLineNumber if previousDiffLineNumber is -1
 
     @moveToLineNumber(previousDiffLineNumber)
 
@@ -61,8 +73,6 @@ class GitDiffView
     if lineNumber >= 0
       @editor.setCursorBufferPosition([lineNumber, 0])
       @editor.moveCursorToFirstCharacterOfLine()
-    else
-      atom.beep()
 
   unsubscribeFromBuffer: ->
     if @buffer?
