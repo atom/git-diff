@@ -1,4 +1,4 @@
-# Git Diff package
+# Git Diff package [![Build Status](https://travis-ci.org/atom/git-diff.svg?branch=master)](https://travis-ci.org/atom/git-diff)
 
 Marks lines in the editor gutter that have been added, edited, or deleted since
 the last commit.
