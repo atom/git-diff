@@ -1,10 +1,14 @@
 GitDiffView = require './git-diff-view'
+ReactGitDiffView = require './react-git-diff-view'
 
 module.exports =
   configDefaults:
     showIconsInEditorGutter: false
 
   activate: ->
-    atom.workspaceView.eachEditorView (editor) ->
-      if atom.project.getRepo()? and editor.attached and editor.getPane()?
-        new GitDiffView(editor)
+    atom.workspaceView.eachEditorView (editorView) ->
+      if atom.project.getRepo()? and editorView.attached and editorView.getPane()?
+        if editorView.hasClass('react')
+          new ReactGitDiffView(editorView)
+        else
+          new GitDiffView(editorView)
