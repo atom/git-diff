@@ -10,7 +10,6 @@ class ReactGitDiffView
 
     @subscribe @editorView, 'editor:path-changed', @subscribeToBuffer
     @subscribe atom.project.getRepo(), 'statuses-changed', =>
-      @decorations = {}
       @scheduleUpdate()
     @subscribe atom.project.getRepo(), 'status-changed', (path) =>
       @scheduleUpdate() if path is @editor.getPath()
