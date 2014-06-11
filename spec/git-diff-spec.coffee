@@ -7,6 +7,8 @@ describe "GitDiff package", ->
   [editor, editorView, projectPath] = []
 
   beforeEach ->
+    spyOn(window, 'setImmediate').andCallFake (fn) -> fn()
+
     projectPath = temp.mkdirSync('git-diff-spec-')
     fs.copySync(path.join(__dirname, 'fixtures', 'working-dir'), projectPath)
     fs.moveSync(path.join(projectPath, 'git.git'), path.join(projectPath, '.git'))
