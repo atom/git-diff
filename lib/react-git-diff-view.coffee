@@ -6,14 +6,13 @@ class ReactGitDiffView
 
   constructor: (@editorView) ->
     {@editor, @gutter} = @editorView
-    @diffs = {}
+    @decorations = {}
 
     @subscribe @editorView, 'editor:path-changed', @subscribeToBuffer
     @subscribe atom.project.getRepo(), 'statuses-changed', =>
-      @diffs = {}
+      @decorations = {}
       @scheduleUpdate()
     @subscribe atom.project.getRepo(), 'status-changed', (path) =>
-      delete @diffs[path]
       @scheduleUpdate() if path is @editor.getPath()
 
     @subscribeToBuffer()
@@ -37,8 +36,7 @@ class ReactGitDiffView
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
     nextDiffLineNumber = null
     firstDiffLineNumber = null
-    hunks = @diffs[@editor.getPath()] ? []
-    for {newStart} in hunks
+    for {newStart} in @diffs ? []
       if newStart > cursorLineNumber
         nextDiffLineNumber ?= newStart - 1
         nextDiffLineNumber = Math.min(newStart - 1, nextDiffLineNumber)
@@ -55,8 +53,7 @@ class ReactGitDiffView
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
     previousDiffLineNumber = -1
     lastDiffLineNumber = -1
-    hunks = @diffs[@editor.getPath()] ? []
-    for {newStart} in hunks
+    for {newStart} in @diffs ? []
       if newStart < cursorLineNumber
         previousDiffLineNumber = Math.max(newStart - 1, previousDiffLineNumber)
       lastDiffLineNumber = Math.max(newStart - 1, lastDiffLineNumber)
@@ -73,8 +70,7 @@ class ReactGitDiffView
 
   unsubscribeFromBuffer: ->
     if @buffer?
-      @removeDiffs()
-      delete @diffs[@buffer.getPath()] if @buffer.destroyed
+      @removeDecorations()
       @buffer.off 'contents-modified', @updateDiffs
       @buffer = null
 
@@ -82,45 +78,42 @@ class ReactGitDiffView
     @unsubscribeFromBuffer()
 
     if @buffer = @editor.getBuffer()
-      @scheduleUpdate() unless @diffs[@buffer.getPath()]?
+      @scheduleUpdate()
       @buffer.on 'contents-modified', @updateDiffs
 
   scheduleUpdate: ->
     setImmediate(@updateDiffs)
 
   updateDiffs: =>
-    return unless @buffer?
-    @removeDiffs(@diffs)
-    @diffs = @generateDiffs()
-    @addDiffs(@diffs)
+    @removeDecorations(@decorations)
+    if path = @buffer?.getPath()
+      if @diffs = atom.project.getRepo()?.getLineDiffs(path, @buffer.getText())
+        @decorations = @generateDecorations(@diffs)
+        @addDecorations(@decorations)
 
-  generateDiffs: ->
-    path = @buffer.getPath()
-    return unless path
+  generateDecorations: (diffs) ->
+    decorations = {}
 
-    rawHunks = atom.project.getRepo()?.getLineDiffs(path, @buffer.getText())
-    diffs = {}
-
-    for {oldStart, newStart, oldLines, newLines} in rawHunks
+    for {oldStart, newStart, oldLines, newLines} in diffs
       if oldLines is 0 and newLines > 0
         for row in [newStart...newStart + newLines]
-          diffs[row - 1] = {type: 'gutter', class: 'git-line-added'}
+          decorations[row - 1] = {type: 'gutter', class: 'git-line-added'}
       else if newLines is 0 and oldLines > 0
-        diffs[newStart - 1] = {type: 'gutter', class: 'git-line-removed'}
+        decorations[newStart - 1] = {type: 'gutter', class: 'git-line-removed'}
       else
         for row in [newStart...newStart + newLines]
-          diffs[row - 1] = {type: 'gutter', class: 'git-line-modified'}
+          decorations[row - 1] = {type: 'gutter', class: 'git-line-modified'}
 
-    diffs
+    decorations
 
-  removeDiffs: (diffs) =>
-    return unless diffs?
-    for bufferRow, decoration of diffs
+  removeDecorations: (decorations) =>
+    return unless decorations?
+    for bufferRow, decoration of decorations
       @editor.removeDecorationFromBufferRow(bufferRow, decoration)
     return
 
-  addDiffs: (diffs) =>
-    return unless diffs?
-    for bufferRow, decoration of diffs
+  addDecorations: (decorations) =>
+    return unless decorations?
+    for bufferRow, decoration of decorations
       @editor.addDecorationToBufferRow(bufferRow, decoration)
     return
