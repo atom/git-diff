@@ -7,6 +7,7 @@ class ReactGitDiffView
   constructor: (@editorView) ->
     {@editor, @gutter} = @editorView
     @decorations = {}
+    @markers = null
 
     @subscribe @editorView, 'editor:path-changed', @subscribeToBuffer
     @subscribe atom.project.getRepo(), 'statuses-changed', =>
@@ -84,35 +85,30 @@ class ReactGitDiffView
     setImmediate(@updateDiffs)
 
   updateDiffs: =>
-    @removeDecorations(@decorations)
+    @removeDecorations()
     if path = @buffer?.getPath()
       if @diffs = atom.project.getRepo()?.getLineDiffs(path, @buffer.getText())
-        @decorations = @generateDecorations(@diffs)
-        @addDecorations(@decorations)
+        @addDecorations(@diffs)
 
-  generateDecorations: (diffs) ->
-    decorations = {}
-
+  addDecorations: (diffs) ->
     for {oldStart, newStart, oldLines, newLines} in diffs
+      startRow = newStart - 1
+      endRow = newStart + newLines - 2
       if oldLines is 0 and newLines > 0
-        for row in [newStart...newStart + newLines]
-          decorations[row - 1] = {type: 'gutter', class: 'git-line-added'}
+        @markRange(startRow, endRow, 'git-line-added')
       else if newLines is 0 and oldLines > 0
-        decorations[newStart - 1] = {type: 'gutter', class: 'git-line-removed'}
+        @markRange(startRow, startRow, 'git-line-removed')
       else
-        for row in [newStart...newStart + newLines]
-          decorations[row - 1] = {type: 'gutter', class: 'git-line-modified'}
-
-    decorations
-
-  removeDecorations: (decorations) =>
-    return unless decorations?
-    for bufferRow, decoration of decorations
-      @editor.removeDecorationFromBufferRow(bufferRow, decoration)
+        @markRange(startRow, endRow, 'git-line-modified')
     return
 
-  addDecorations: (decorations) =>
-    return unless decorations?
-    for bufferRow, decoration of decorations
-      @editor.addDecorationToBufferRow(bufferRow, decoration)
-    return
+  removeDecorations: ->
+    return unless @markers?
+    marker.destroy() for marker in @markers
+    @markers = null
+
+  markRange: (startRow, endRow, klass) ->
+    marker = @editor.markBufferRange([[startRow, 0], [endRow, Infinity]], invalidate: 'never')
+    @editor.addDecorationForMarker(marker, type: ['gutter', 'line'], class: klass)
+    @markers ?= []
+    @markers.push(marker)
