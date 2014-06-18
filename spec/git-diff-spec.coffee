@@ -16,9 +16,13 @@ describe "GitDiff package", ->
 
     atom.workspaceView = new WorkspaceView
     atom.workspaceView.attachToDom()
-    atom.workspaceView.openSync('sample.js')
-    editorView = atom.workspaceView.getActiveView()
-    {editor} = editorView
+
+    waitsForPromise ->
+      atom.workspace.open('sample.js')
+
+    runs ->
+      editorView = atom.workspaceView.getActiveView()
+      {editor} = editorView
 
     waitsForPromise ->
       atom.packages.activatePackage('git-diff')
@@ -62,14 +66,23 @@ describe "GitDiff package", ->
 
   describe "when a modified file is opened", ->
     it "highlights the changed lines", ->
+      nextTick = false
       filePath = atom.project.resolve('sample.txt')
       buffer = atom.project.bufferForPathSync(filePath)
       buffer.setText("Some different text.")
-      atom.workspaceView.openSync('sample.txt')
-      editorView = atom.workspaceView.getActiveView()
-      nextTick = false
-      setImmediate -> nextTick = true
-      waitsFor -> nextTick
+
+      waitsForPromise ->
+        atom.workspace.open('sample.txt')
+
+      runs ->
+        editorView = atom.workspaceView.getActiveView()
+
+      setImmediate ->
+        nextTick = true
+
+      waitsFor ->
+        nextTick
+
       runs ->
         expect(editorView.find('.git-line-modified').length).toBe 1
         expect(editorView.find('.git-line-modified')).toHaveClass('line-number-0')
