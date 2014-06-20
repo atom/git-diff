@@ -109,6 +109,6 @@ class ReactGitDiffView
 
   markRange: (startRow, endRow, klass) ->
     marker = @editor.markBufferRange([[startRow, 0], [endRow, Infinity]], invalidate: 'never')
-    @editor.addDecorationForMarker(marker, type: ['gutter', 'line'], class: klass)
+    @editor.addDecorationForMarker(marker, type: 'gutter', class: klass)
     @markers ?= []
     @markers.push(marker)
