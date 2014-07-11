@@ -32,6 +32,11 @@ class ReactGitDiffView
       else
         @gutter.removeClass('git-diff-icon')
 
+    @subscribe atom.config.observe 'editor.showLineNumbers', =>
+      {@gutter} = @editorView
+      if atom.config.get('editor.showLineNumbers') and atom.config.get('git-diff.showIconsInEditorGutter')
+        @gutter.addClass('git-diff-icon')
+
   moveToNextDiff: ->
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
     nextDiffLineNumber = null
