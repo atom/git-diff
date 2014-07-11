@@ -116,3 +116,21 @@ describe "GitDiff package", ->
 
       editorView.trigger 'git-diff:move-to-previous-diff'
       expect(editor.getCursorBufferPosition()).toEqual [4, 4]
+
+  describe "when the showIconsInEditorGutter config option is true", ->
+    beforeEach ->
+      atom.config.set 'git-diff.showIconsInEditorGutter', true
+
+    it "the gutter has a git-diff-icon class", ->
+      expect(editorView.find('.gutter')).toHaveClass 'git-diff-icon'
+
+    it "keeps the git-diff-icon class when editor.showLineNumbers is toggled", ->
+      atom.config.set 'editor.showLineNumbers', false
+      expect(editorView.find('.gutter')).not.toHaveClass 'git-diff-icon'
+
+      atom.config.set 'editor.showLineNumbers', true
+      expect(editorView.find('.gutter')).toHaveClass 'git-diff-icon'
+
+    it "removes the git-diff-icon class when the showIconsInEditorGutter config option set to false", ->
+      atom.config.set 'git-diff.showIconsInEditorGutter', false
+      expect(editorView.find('.gutter')).not.toHaveClass 'git-diff-icon'
