@@ -6,6 +6,9 @@ class DiffListView extends SelectListView
     super
     @addClass('symbols-view overlay from-top')
 
+  getEmptyMessage: ->
+    'No diffs'
+
   attach: ->
     @storeFocusedElement()
     atom.workspaceView.appendToTop(this)
