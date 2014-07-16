@@ -9,14 +9,15 @@ class DiffListView extends SelectListView
   getEmptyMessage: ->
     'No diffs'
 
+  getFilterKey: ->
+    'lineText'
+
   attach: ->
     @storeFocusedElement()
     atom.workspaceView.appendToTop(this)
     @focusFilterEditor()
 
-  viewForItem: ({oldStart, newStart, oldLines, newLines}) ->
-    bufferRow = if newStart > 0 then newStart - 1 else newStart
-    lineText = @editor.lineForBufferRow(bufferRow) ? ''
+  viewForItem: ({oldStart, newStart, oldLines, newLines, lineText}) ->
     $$ ->
       @li class: 'two-lines', =>
         @div lineText, class: 'primary-line'
@@ -24,6 +25,9 @@ class DiffListView extends SelectListView
 
   populate: ->
     diffs = atom.project.getRepo()?.getLineDiffs(@editor.getPath(), @editor.getText()) ? []
+    for diff in diffs
+      bufferRow = if diff.newStart > 0 then diff.newStart - 1 else diff.newStart
+      diff.lineText = @editor.lineForBufferRow(bufferRow) ? ''
     @setItems(diffs)
 
   toggle: ->
