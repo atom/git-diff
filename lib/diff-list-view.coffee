@@ -4,7 +4,7 @@ module.exports =
 class DiffListView extends SelectListView
   initialize: ->
     super
-    @addClass('symbols-view overlay from-top')
+    @addClass('diff-list-view overlay from-top')
 
   getEmptyMessage: ->
     'No diffs'
@@ -27,7 +27,7 @@ class DiffListView extends SelectListView
     diffs = atom.project.getRepo()?.getLineDiffs(@editor.getPath(), @editor.getText()) ? []
     for diff in diffs
       bufferRow = if diff.newStart > 0 then diff.newStart - 1 else diff.newStart
-      diff.lineText = @editor.lineForBufferRow(bufferRow) ? ''
+      diff.lineText = @editor.lineForBufferRow(bufferRow)?.trim() ? ''
     @setItems(diffs)
 
   toggle: ->
