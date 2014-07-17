@@ -1,3 +1,4 @@
 '.editor':
   'alt-g down': 'git-diff:move-to-next-diff'
   'alt-g up': 'git-diff:move-to-previous-diff'
+  'alt-g d': 'git-diff:toggle-diff-list'
