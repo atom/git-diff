@@ -6,8 +6,11 @@ class DiffListView extends SelectListView
     super
     @addClass('diff-list-view overlay from-top')
 
-  getEmptyMessage: ->
-    'No diffs'
+  getEmptyMessage: (itemCount) ->
+    if itemCount is 0
+      'No diffs in file'
+    else
+      super
 
   getFilterKey: ->
     'lineText'
