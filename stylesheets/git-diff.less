@@ -41,16 +41,19 @@
     &.git-line-modified:before {
       content: @primitive-dot;
       color: @syntax-color-modified;
+      visibility: visible;
     }
 
     &.git-line-added:before {
       content: @plus;
       color: @syntax-color-added;
+      visibility: visible;
     }
 
     &.git-line-removed:before {
       content: @dash;
       color: @syntax-color-removed;
+      visibility: visible;
     }
   }
 }
