@@ -15,12 +15,19 @@
     }
 
     &.git-line-removed:before {
-      content: " ";
+      @size: 4px;
+
       position: absolute;
       left: 0;
-      bottom: -1px;
-      width: 8px;
-      border-bottom: 2px solid @syntax-color-removed;
+      bottom: -@size;
+      height: 0;
+      width: 0;
+      content: " ";
+      border: solid transparent;
+      border-left-color: @syntax-color-removed;
+      border-width: @size;
+      margin-top: -@size;
+      pointer-events: none;
     }
   }
   .gutter.git-diff-icon .line-number {
@@ -53,13 +60,11 @@
     }
 
     &.git-line-removed:before {
-      content: " ";
-      position: absolute;
-      left: 7px;
-      bottom: -1px;
-      top: auto;
-      width: 8px;
-      border-bottom: 3px solid @syntax-color-removed;
+      border: none; // reset triangle
+      content: @dash;
+      color: @syntax-color-removed;
+      position: relative;
+      top: .6em;
     }
   }
 }
