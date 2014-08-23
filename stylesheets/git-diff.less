@@ -14,9 +14,20 @@
       padding-left: ~"calc(0.5em - 2px)";
     }
 
-    &.git-line-removed {
-      border-left: 2px solid @syntax-color-removed;
-      padding-left: ~"calc(0.5em - 2px)";
+    &.git-line-removed:before {
+      @size: 4px;
+
+      position: absolute;
+      left: 0;
+      bottom: -@size;
+      height: 0;
+      width: 0;
+      content: " ";
+      border: solid transparent;
+      border-left-color: @syntax-color-removed;
+      border-width: @size;
+      margin-top: -@size;
+      pointer-events: none;
     }
   }
   .gutter.git-diff-icon .line-number {
@@ -49,8 +60,11 @@
     }
 
     &.git-line-removed:before {
+      border: none; // reset triangle
       content: @dash;
       color: @syntax-color-removed;
+      position: relative;
+      top: .6em;
     }
   }
 }
