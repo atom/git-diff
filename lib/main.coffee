@@ -1,5 +1,4 @@
 GitDiffView = require './git-diff-view'
-ReactGitDiffView = require './react-git-diff-view'
 DiffListView = null
 
 
@@ -16,9 +15,6 @@ module.exports =
   activate: ->
     atom.workspaceView.eachEditorView (editorView) ->
       if atom.project.getRepo()? and editorView.attached and editorView.getPane()?
-        if editorView.hasClass('react')
-          new ReactGitDiffView(editorView)
-        else
-          new GitDiffView(editorView)
+        new GitDiffView(editorView)
 
         editorView.command 'git-diff:toggle-diff-list', toggleDiffList
