@@ -1,7 +1,6 @@
 GitDiffView = require './git-diff-view'
 DiffListView = null
 
-
 diffListView = null
 toggleDiffList = ->
   DiffListView ?= require './diff-list-view'
@@ -9,8 +8,10 @@ toggleDiffList = ->
   diffListView.toggle()
 
 module.exports =
-  configDefaults:
-    showIconsInEditorGutter: false
+  config:
+    showIconsInEditorGutter:
+      type: 'boolean'
+      default: false
 
   activate: ->
     atom.workspaceView.eachEditorView (editorView) ->
