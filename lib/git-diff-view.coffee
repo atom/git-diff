@@ -18,6 +18,7 @@ class GitDiffView
     @subscribeToBuffer()
 
     @subscribe @editorView, 'editor:will-be-removed', =>
+      @cancelUpdate()
       @unsubscribe()
       @unsubscribeFromBuffer()
 
@@ -86,8 +87,12 @@ class GitDiffView
       @scheduleUpdate()
       @buffer.on 'contents-modified', @updateDiffs
 
+  cancelUpdate: ->
+    clearImmediate(@immediateId)
+
   scheduleUpdate: ->
-    setImmediate(@updateDiffs)
+    @cancelUpdate()
+    @immediateId = setImmediate(@updateDiffs)
 
   updateDiffs: =>
     @removeDecorations()
