@@ -95,6 +95,8 @@ class GitDiffView
     @immediateId = setImmediate(@updateDiffs)
 
   updateDiffs: =>
+    return if @editor.isDestroyed()
+
     @removeDecorations()
     if path = @buffer?.getPath()
       if @diffs = atom.project.getRepo()?.getLineDiffs(path, @buffer.getText())
