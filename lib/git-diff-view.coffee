@@ -1,10 +1,12 @@
 {Subscriber} = require 'emissary'
+{CompositeDisposable} = require 'atom'
 
 module.exports =
 class GitDiffView
   Subscriber.includeInto(this)
 
   constructor: (@editorView) ->
+    @subscriptions = new CompositeDisposable()
     {@editor, @gutter} = @editorView
     @decorations = {}
     @markers = null
@@ -17,10 +19,11 @@ class GitDiffView
 
     @subscribeToBuffer()
 
-    @subscribe @editorView, 'editor:will-be-removed', =>
+    @subscriptions.add @editor.onDidDestroy =>
       @cancelUpdate()
       @unsubscribe()
       @unsubscribeFromBuffer()
+      @subscriptions.dispose()
 
     @subscribeToCommand @editorView, 'git-diff:move-to-next-diff', =>
       @moveToNextDiff()
