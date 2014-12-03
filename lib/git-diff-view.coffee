@@ -8,6 +8,7 @@ class GitDiffView
     @markers = null
 
     @subscriptions.add(@editor.onDidStopChanging(@updateDiffs))
+    @subscriptions.add(@editor.onDidChangePath(@updateDiffs))
 
     atom.project.getRepositories().forEach (repository) =>
       @subscriptions.add repository.onDidChangeStatuses =>
