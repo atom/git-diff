@@ -36,7 +36,7 @@ class DiffListView extends SelectListView
   toggle: ->
     if @hasParent()
       @cancel()
-    else if @editor = atom.workspace.getActiveEditor()
+    else if @editor = atom.workspace.getActiveTextEditor()
       @populate()
       @attach()
 

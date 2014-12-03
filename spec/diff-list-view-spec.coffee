@@ -22,7 +22,7 @@ describe "git-diff:toggle-diff-list", ->
       atom.workspace.open('sample.js')
 
     runs ->
-      editor = atom.workspace.getActiveEditor()
+      editor = atom.workspace.getActiveTextEditor()
       editor.setCursorBufferPosition([4, 29])
       editor.insertText('a')
       atom.workspaceView.getActiveView().trigger 'git-diff:toggle-diff-list'
