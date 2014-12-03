@@ -1,16 +1,13 @@
-{Subscriber} = require 'emissary'
 {CompositeDisposable} = require 'atom'
 
 module.exports =
 class GitDiffView
-  Subscriber.includeInto(this)
-
   constructor: (@editor) ->
     @subscriptions = new CompositeDisposable()
     @decorations = {}
     @markers = null
 
-    @subscriptions.add(@editor.onDidChangePath(@subscribeToBuffer))
+    @subscriptions.add(@editor.onDidStopChanging(@updateDiffs))
 
     atom.project.getRepositories().forEach (repository) =>
       @subscriptions.add repository.onDidChangeStatuses =>
@@ -18,12 +15,9 @@ class GitDiffView
       @subscriptions.add repository.onDidChangeStatus (changedPath) =>
         @scheduleUpdate() if changedPath is @editor.getPath()
 
-    @subscribeToBuffer()
-
     @subscriptions.add @editor.onDidDestroy =>
       @cancelUpdate()
-      @unsubscribe()
-      @unsubscribeFromBuffer()
+      @removeDecorations()
       @subscriptions.dispose()
 
     editorView = atom.views.getView(@editor)
@@ -40,6 +34,7 @@ class GitDiffView
       @updateIconDecoration()
 
     @updateIconDecoration()
+    @scheduleUpdate()
 
   moveToNextDiff: ->
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
@@ -84,19 +79,6 @@ class GitDiffView
       @editor.setCursorBufferPosition([lineNumber, 0])
       @editor.moveCursorToFirstCharacterOfLine()
 
-  unsubscribeFromBuffer: ->
-    if @buffer?
-      @removeDecorations()
-      @buffer.off 'contents-modified', @updateDiffs
-      @buffer = null
-
-  subscribeToBuffer: =>
-    @unsubscribeFromBuffer()
-
-    if @buffer = @editor.getBuffer()
-      @scheduleUpdate()
-      @buffer.on 'contents-modified', @updateDiffs
-
   cancelUpdate: ->
     clearImmediate(@immediateId)
 
@@ -108,8 +90,8 @@ class GitDiffView
     return if @editor.isDestroyed()
 
     @removeDecorations()
-    if path = @buffer?.getPath()
-      if @diffs = atom.project.getRepositories()[0]?.getLineDiffs(path, @buffer.getText())
+    if path = @editor?.getPath()
+      if @diffs = atom.project.getRepositories()[0]?.getLineDiffs(path, @editor.getText())
         @addDecorations(@diffs)
 
   addDecorations: (diffs) ->
