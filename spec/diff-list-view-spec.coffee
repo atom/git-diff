@@ -1,7 +1,7 @@
 path = require 'path'
 fs = require 'fs-plus'
 temp = require 'temp'
-{WorkspaceView} = require 'atom'
+{$} = require 'atom'
 
 describe "git-diff:toggle-diff-list", ->
   [diffListView, editor] = []
@@ -12,8 +12,7 @@ describe "git-diff:toggle-diff-list", ->
     fs.moveSync(path.join(projectPath, 'git.git'), path.join(projectPath, '.git'))
     atom.project.setPaths([projectPath])
 
-    atom.workspaceView = new WorkspaceView
-    atom.workspaceView.attachToDom()
+    jasmine.attachToDOM(atom.views.getView(atom.workspace))
 
     waitsForPromise ->
       atom.packages.activatePackage('git-diff')
@@ -25,17 +24,17 @@ describe "git-diff:toggle-diff-list", ->
       editor = atom.workspace.getActiveTextEditor()
       editor.setCursorBufferPosition([4, 29])
       editor.insertText('a')
-      atom.workspaceView.getActiveView().trigger 'git-diff:toggle-diff-list'
+      atom.commands.dispatch(atom.views.getView(editor), 'git-diff:toggle-diff-list')
 
   afterEach ->
     diffListView.cancel()
 
   it "shows a list of all diff hunks", ->
-    diffListView = atom.workspaceView.find('.diff-list-view').view()
+    diffListView = $(atom.views.getView(atom.workspace)).find('.diff-list-view').view()
     expect(diffListView.list.children().text()).toBe "while(items.length > 0) {a-5,1 +5,1"
 
   it "moves the cursor to the selected hunk", ->
     editor.setCursorBufferPosition([0, 0])
-    diffListView = atom.workspaceView.find('.diff-list-view').view()
-    diffListView.trigger 'core:confirm'
+    diffListView = $(atom.views.getView(atom.workspace)).find('.diff-list-view').view()
+    atom.commands.dispatch(diffListView.element, 'core:confirm')
     expect(editor.getCursorBufferPosition()).toEqual [4,4]

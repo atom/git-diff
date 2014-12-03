@@ -4,7 +4,8 @@ module.exports =
 class DiffListView extends SelectListView
   initialize: ->
     super
-    @addClass('diff-list-view overlay from-top')
+    @panel = atom.workspace.addModalPanel(item: this, visible: false)
+    @addClass('diff-list-view')
 
   getEmptyMessage: (itemCount) ->
     if itemCount is 0
@@ -17,7 +18,7 @@ class DiffListView extends SelectListView
 
   attach: ->
     @storeFocusedElement()
-    atom.workspaceView.appendToTop(this)
+    @panel.show()
     @focusFilterEditor()
 
   viewForItem: ({oldStart, newStart, oldLines, newLines, lineText}) ->
@@ -34,11 +35,14 @@ class DiffListView extends SelectListView
     @setItems(diffs)
 
   toggle: ->
-    if @hasParent()
+    if @panel.isVisible()
       @cancel()
     else if @editor = atom.workspace.getActiveTextEditor()
       @populate()
       @attach()
+
+  cancelled: ->
+    @panel.hide()
 
   confirmed: ({newStart})->
     @cancel()
