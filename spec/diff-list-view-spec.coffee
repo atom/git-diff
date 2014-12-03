@@ -10,7 +10,7 @@ describe "git-diff:toggle-diff-list", ->
     projectPath = temp.mkdirSync('git-diff-spec-')
     fs.copySync(path.join(__dirname, 'fixtures', 'working-dir'), projectPath)
     fs.moveSync(path.join(projectPath, 'git.git'), path.join(projectPath, '.git'))
-    atom.project.setPath(projectPath)
+    atom.project.setPaths([projectPath])
 
     atom.workspaceView = new WorkspaceView
     atom.workspaceView.attachToDom()
