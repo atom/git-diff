@@ -10,6 +10,7 @@ class GitDiffView
     {@editor, @gutter} = @editorView
     @decorations = {}
     @markers = null
+    @iconMarker = null
 
     @subscribe @editorView, 'editor:path-changed', @subscribeToBuffer
 
@@ -32,16 +33,13 @@ class GitDiffView
     @subscribeToCommand @editorView, 'git-diff:move-to-previous-diff', =>
       @moveToPreviousDiff()
 
-    @subscribe atom.config.observe 'git-diff.showIconsInEditorGutter', =>
-      if atom.config.get 'git-diff.showIconsInEditorGutter'
-        @gutter.addClass('git-diff-icon')
-      else
-        @gutter.removeClass('git-diff-icon')
+    @subscriptions.add atom.config.onDidChange 'git-diff.showIconsInEditorGutter', =>
+      @updateIconDecoration()
 
-    @subscribe atom.config.observe 'editor.showLineNumbers', =>
-      {@gutter} = @editorView
-      if atom.config.get('editor.showLineNumbers') and atom.config.get('git-diff.showIconsInEditorGutter')
-        @gutter.addClass('git-diff-icon')
+    @subscriptions.add atom.config.onDidChange 'editor.showLineNumbers', =>
+      @updateIconDecoration()
+
+    @updateIconDecoration()
 
   moveToNextDiff: ->
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
@@ -59,6 +57,12 @@ class GitDiffView
     nextDiffLineNumber = firstDiffLineNumber unless nextDiffLineNumber?
 
     @moveToLineNumber(nextDiffLineNumber)
+
+  updateIconDecoration: ->
+    @iconMarker?.destroy()
+    if atom.config.get('editor.showLineNumbers') and atom.config.get('git-diff.showIconsInEditorGutter')
+      @iconMarker = @editor.markBufferRange([[0, 0], [Infinity, Infinity]], invalidate: 'never')
+      @editor.decorateMarker(@iconMarker, type: 'gutter', class: 'git-diff-icon')
 
   moveToPreviousDiff: ->
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
@@ -82,6 +86,8 @@ class GitDiffView
   unsubscribeFromBuffer: ->
     if @buffer?
       @removeDecorations()
+      @iconMarker?.destroy()
+      @iconMarker = null
       @buffer.off 'contents-modified', @updateDiffs
       @buffer = null
 
