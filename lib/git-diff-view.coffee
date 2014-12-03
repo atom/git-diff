@@ -16,8 +16,8 @@ class GitDiffView
     atom.project.getRepositories().forEach (repository) =>
       @subscriptions.add repository.onDidChangeStatuses =>
         @scheduleUpdate()
-      @subscriptions.add repository.onDidChangeStatus (path) =>
-        @scheduleUpdate() if path is @editor.getPath()
+      @subscriptions.add repository.onDidChangeStatus (changedPath) =>
+        @scheduleUpdate() if changedPath is @editor.getPath()
 
     @subscribeToBuffer()
 
