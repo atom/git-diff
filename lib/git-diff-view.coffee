@@ -5,13 +5,12 @@ module.exports =
 class GitDiffView
   Subscriber.includeInto(this)
 
-  constructor: (@editorView) ->
+  constructor: (@editor) ->
     @subscriptions = new CompositeDisposable()
-    {@editor, @gutter} = @editorView
     @decorations = {}
     @markers = null
 
-    @subscribe @editorView, 'editor:path-changed', @subscribeToBuffer
+    @subscriptions.add(@editor.onDidChangePath(@subscribeToBuffer))
 
     atom.project.getRepositories().forEach (repository) =>
       @subscriptions.add repository.onDidChangeStatuses =>
@@ -27,9 +26,11 @@ class GitDiffView
       @unsubscribeFromBuffer()
       @subscriptions.dispose()
 
-    @subscribeToCommand @editorView, 'git-diff:move-to-next-diff', =>
+    editorView = atom.views.getView(@editor)
+
+    @subscriptions.add atom.commands.add editorView, 'git-diff:move-to-next-diff', =>
       @moveToNextDiff()
-    @subscribeToCommand @editorView, 'git-diff:move-to-previous-diff', =>
+    @subscriptions.add atom.commands.add editorView, 'git-diff:move-to-previous-diff', =>
       @moveToPreviousDiff()
 
     @subscriptions.add atom.config.onDidChange 'git-diff.showIconsInEditorGutter', =>
