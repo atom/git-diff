@@ -1,7 +1,7 @@
 path = require 'path'
 fs = require 'fs-plus'
 temp = require 'temp'
-{$} = require 'atom'
+{$} = require 'atom-space-pen-views'
 
 describe "git-diff:toggle-diff-list", ->
   [diffListView, editor] = []
