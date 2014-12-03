@@ -77,7 +77,7 @@ class GitDiffView
   moveToLineNumber: (lineNumber=-1) ->
     if lineNumber >= 0
       @editor.setCursorBufferPosition([lineNumber, 0])
-      @editor.moveCursorToFirstCharacterOfLine()
+      @editor.moveToFirstCharacterOfLine()
 
   cancelUpdate: ->
     clearImmediate(@immediateId)

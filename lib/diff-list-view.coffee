@@ -45,4 +45,4 @@ class DiffListView extends SelectListView
 
     bufferRow = if newStart > 0 then newStart - 1 else newStart
     @editor.setCursorBufferPosition([bufferRow, 0], autoscroll: true)
-    @editor.moveCursorToFirstCharacterOfLine()
+    @editor.moveToFirstCharacterOfLine()

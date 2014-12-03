@@ -38,7 +38,7 @@ describe "GitDiff package", ->
   describe "when the editor has added lines", ->
     it "highlights the added lines", ->
       expect(editorView.find('.git-line-added').length).toBe 0
-      editor.moveCursorToEndOfLine()
+      editor.moveToEndOfLine()
       editor.insertNewline()
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
