@@ -12,10 +12,12 @@ class GitDiffView
     @markers = null
 
     @subscribe @editorView, 'editor:path-changed', @subscribeToBuffer
-    @subscribe atom.project.getRepo(), 'statuses-changed', =>
-      @scheduleUpdate()
-    @subscribe atom.project.getRepo(), 'status-changed', (path) =>
-      @scheduleUpdate() if path is @editor.getPath()
+
+    atom.project.getRepositories().forEach (repository) =>
+      @subscriptions.add repository.onDidChangeStatuses =>
+        @scheduleUpdate()
+      @subscriptions.add repository.onDidChangeStatus (path) =>
+        @scheduleUpdate() if path is @editor.getPath()
 
     @subscribeToBuffer()
 
