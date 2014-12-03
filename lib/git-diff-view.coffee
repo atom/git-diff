@@ -108,7 +108,7 @@ class GitDiffView
 
     @removeDecorations()
     if path = @buffer?.getPath()
-      if @diffs = atom.project.getRepo()?.getLineDiffs(path, @buffer.getText())
+      if @diffs = atom.project.getRepositories()[0]?.getLineDiffs(path, @buffer.getText())
         @addDecorations(@diffs)
 
   addDecorations: (diffs) ->

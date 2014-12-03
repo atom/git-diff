@@ -15,7 +15,7 @@ module.exports =
 
   activate: ->
     atom.workspaceView.eachEditorView (editorView) ->
-      if atom.project.getRepo()? and editorView.attached and editorView.getPane()?
+      if atom.project.getRepositories()[0]? and editorView.attached and editorView.getPane()?
         new GitDiffView(editorView)
 
         editorView.command 'git-diff:toggle-diff-list', toggleDiffList
