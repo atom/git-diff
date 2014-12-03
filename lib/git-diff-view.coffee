@@ -10,7 +10,6 @@ class GitDiffView
     {@editor, @gutter} = @editorView
     @decorations = {}
     @markers = null
-    @iconMarker = null
 
     @subscribe @editorView, 'editor:path-changed', @subscribeToBuffer
 
@@ -59,10 +58,11 @@ class GitDiffView
     @moveToLineNumber(nextDiffLineNumber)
 
   updateIconDecoration: ->
-    @iconMarker?.destroy()
+    gutter = atom.views.getView(@editor).querySelector('.gutter')
     if atom.config.get('editor.showLineNumbers') and atom.config.get('git-diff.showIconsInEditorGutter')
-      @iconMarker = @editor.markBufferRange([[0, 0], [Infinity, Infinity]], invalidate: 'never')
-      @editor.decorateMarker(@iconMarker, type: 'gutter', class: 'git-diff-icon')
+      gutter?.classList.add('git-diff-icon')
+    else
+      gutter?.classList.remove('git-diff-icon')
 
   moveToPreviousDiff: ->
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
@@ -86,8 +86,6 @@ class GitDiffView
   unsubscribeFromBuffer: ->
     if @buffer?
       @removeDecorations()
-      @iconMarker?.destroy()
-      @iconMarker = null
       @buffer.off 'contents-modified', @updateDiffs
       @buffer = null
 

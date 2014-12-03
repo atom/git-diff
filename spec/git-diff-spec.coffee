@@ -122,15 +122,15 @@ describe "GitDiff package", ->
       atom.config.set 'git-diff.showIconsInEditorGutter', true
 
     it "the gutter has a git-diff-icon class", ->
-      expect(editorView.find('.line-number-0')).toHaveClass 'git-diff-icon'
+      expect(editorView.find('.gutter')).toHaveClass 'git-diff-icon'
 
     it "keeps the git-diff-icon class when editor.showLineNumbers is toggled", ->
       atom.config.set 'editor.showLineNumbers', false
-      expect(editorView.find('.line-number-0')).not.toHaveClass 'git-diff-icon'
+      expect(editorView.find('.gutter')).not.toHaveClass 'git-diff-icon'
 
       atom.config.set 'editor.showLineNumbers', true
-      expect(editorView.find('.line-number-0')).toHaveClass 'git-diff-icon'
+      expect(editorView.find('.gutter')).toHaveClass 'git-diff-icon'
 
     it "removes the git-diff-icon class when the showIconsInEditorGutter config option set to false", ->
       atom.config.set 'git-diff.showIconsInEditorGutter', false
-      expect(editorView.find('.line-number-0')).not.toHaveClass 'git-diff-icon'
+      expect(editorView.find('.gutter')).not.toHaveClass 'git-diff-icon'
