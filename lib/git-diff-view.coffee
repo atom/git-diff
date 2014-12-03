@@ -5,7 +5,7 @@ class GitDiffView
   constructor: (@editor) ->
     @subscriptions = new CompositeDisposable()
     @decorations = {}
-    @markers = null
+    @markers = []
 
     @subscriptions.add(@editor.onDidStopChanging(@updateDiffs))
     @subscriptions.add(@editor.onDidChangePath(@updateDiffs))
@@ -108,12 +108,10 @@ class GitDiffView
     return
 
   removeDecorations: ->
-    return unless @markers?
     marker.destroy() for marker in @markers
-    @markers = null
+    @markers = []
 
   markRange: (startRow, endRow, klass) ->
     marker = @editor.markBufferRange([[startRow, 0], [endRow, Infinity]], invalidate: 'never')
     @editor.decorateMarker(marker, type: 'gutter', class: klass)
-    @markers ?= []
     @markers.push(marker)
