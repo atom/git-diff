@@ -1,10 +1,11 @@
-{$$, SelectListView} = require 'atom'
+{$$, SelectListView} = require 'atom-space-pen-views'
 
 module.exports =
 class DiffListView extends SelectListView
   initialize: ->
     super
-    @addClass('diff-list-view overlay from-top')
+    @panel = atom.workspace.addModalPanel(item: this, visible: false)
+    @addClass('diff-list-view')
 
   getEmptyMessage: (itemCount) ->
     if itemCount is 0
@@ -17,7 +18,7 @@ class DiffListView extends SelectListView
 
   attach: ->
     @storeFocusedElement()
-    atom.workspaceView.appendToTop(this)
+    @panel.show()
     @focusFilterEditor()
 
   viewForItem: ({oldStart, newStart, oldLines, newLines, lineText}) ->
@@ -27,22 +28,25 @@ class DiffListView extends SelectListView
         @div "-#{oldStart},#{oldLines} +#{newStart},#{newLines}", class: 'secondary-line'
 
   populate: ->
-    diffs = atom.project.getRepo()?.getLineDiffs(@editor.getPath(), @editor.getText()) ? []
+    diffs = atom.project.getRepositories()[0]?.getLineDiffs(@editor.getPath(), @editor.getText()) ? []
     for diff in diffs
       bufferRow = if diff.newStart > 0 then diff.newStart - 1 else diff.newStart
-      diff.lineText = @editor.lineForBufferRow(bufferRow)?.trim() ? ''
+      diff.lineText = @editor.lineTextForBufferRow(bufferRow)?.trim() ? ''
     @setItems(diffs)
 
   toggle: ->
-    if @hasParent()
+    if @panel.isVisible()
       @cancel()
-    else if @editor = atom.workspace.getActiveEditor()
+    else if @editor = atom.workspace.getActiveTextEditor()
       @populate()
       @attach()
+
+  cancelled: ->
+    @panel.hide()
 
   confirmed: ({newStart})->
     @cancel()
 
     bufferRow = if newStart > 0 then newStart - 1 else newStart
     @editor.setCursorBufferPosition([bufferRow, 0], autoscroll: true)
-    @editor.moveCursorToFirstCharacterOfLine()
+    @editor.moveToFirstCharacterOfLine()

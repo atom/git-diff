@@ -1,42 +1,41 @@
-{Subscriber} = require 'emissary'
+{CompositeDisposable} = require 'atom'
 
 module.exports =
 class GitDiffView
-  Subscriber.includeInto(this)
-
-  constructor: (@editorView) ->
-    {@editor, @gutter} = @editorView
+  constructor: (@editor) ->
+    @subscriptions = new CompositeDisposable()
     @decorations = {}
-    @markers = null
+    @markers = []
 
-    @subscribe @editorView, 'editor:path-changed', @subscribeToBuffer
-    @subscribe atom.project.getRepo(), 'statuses-changed', =>
-      @scheduleUpdate()
-    @subscribe atom.project.getRepo(), 'status-changed', (path) =>
-      @scheduleUpdate() if path is @editor.getPath()
+    @subscriptions.add(@editor.onDidStopChanging(@updateDiffs))
+    @subscriptions.add(@editor.onDidChangePath(@updateDiffs))
 
-    @subscribeToBuffer()
+    atom.project.getRepositories().forEach (repository) =>
+      @subscriptions.add repository.onDidChangeStatuses =>
+        @scheduleUpdate()
+      @subscriptions.add repository.onDidChangeStatus (changedPath) =>
+        @scheduleUpdate() if changedPath is @editor.getPath()
 
-    @subscribe @editorView, 'editor:will-be-removed', =>
+    @subscriptions.add @editor.onDidDestroy =>
       @cancelUpdate()
-      @unsubscribe()
-      @unsubscribeFromBuffer()
+      @removeDecorations()
+      @subscriptions.dispose()
 
-    @subscribeToCommand @editorView, 'git-diff:move-to-next-diff', =>
+    editorView = atom.views.getView(@editor)
+
+    @subscriptions.add atom.commands.add editorView, 'git-diff:move-to-next-diff', =>
       @moveToNextDiff()
-    @subscribeToCommand @editorView, 'git-diff:move-to-previous-diff', =>
+    @subscriptions.add atom.commands.add editorView, 'git-diff:move-to-previous-diff', =>
       @moveToPreviousDiff()
 
-    @subscribe atom.config.observe 'git-diff.showIconsInEditorGutter', =>
-      if atom.config.get 'git-diff.showIconsInEditorGutter'
-        @gutter.addClass('git-diff-icon')
-      else
-        @gutter.removeClass('git-diff-icon')
+    @subscriptions.add atom.config.onDidChange 'git-diff.showIconsInEditorGutter', =>
+      @updateIconDecoration()
 
-    @subscribe atom.config.observe 'editor.showLineNumbers', =>
-      {@gutter} = @editorView
-      if atom.config.get('editor.showLineNumbers') and atom.config.get('git-diff.showIconsInEditorGutter')
-        @gutter.addClass('git-diff-icon')
+    @subscriptions.add atom.config.onDidChange 'editor.showLineNumbers', =>
+      @updateIconDecoration()
+
+    @updateIconDecoration()
+    @scheduleUpdate()
 
   moveToNextDiff: ->
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
@@ -55,6 +54,13 @@ class GitDiffView
 
     @moveToLineNumber(nextDiffLineNumber)
 
+  updateIconDecoration: ->
+    gutter = atom.views.getView(@editor).rootElement?.querySelector('.gutter')
+    if atom.config.get('editor.showLineNumbers') and atom.config.get('git-diff.showIconsInEditorGutter')
+      gutter?.classList.add('git-diff-icon')
+    else
+      gutter?.classList.remove('git-diff-icon')
+
   moveToPreviousDiff: ->
     cursorLineNumber = @editor.getCursorBufferPosition().row + 1
     previousDiffLineNumber = -1
@@ -72,20 +78,7 @@ class GitDiffView
   moveToLineNumber: (lineNumber=-1) ->
     if lineNumber >= 0
       @editor.setCursorBufferPosition([lineNumber, 0])
-      @editor.moveCursorToFirstCharacterOfLine()
-
-  unsubscribeFromBuffer: ->
-    if @buffer?
-      @removeDecorations()
-      @buffer.off 'contents-modified', @updateDiffs
-      @buffer = null
-
-  subscribeToBuffer: =>
-    @unsubscribeFromBuffer()
-
-    if @buffer = @editor.getBuffer()
-      @scheduleUpdate()
-      @buffer.on 'contents-modified', @updateDiffs
+      @editor.moveToFirstCharacterOfLine()
 
   cancelUpdate: ->
     clearImmediate(@immediateId)
@@ -98,8 +91,8 @@ class GitDiffView
     return if @editor.isDestroyed()
 
     @removeDecorations()
-    if path = @buffer?.getPath()
-      if @diffs = atom.project.getRepo()?.getLineDiffs(path, @buffer.getText())
+    if path = @editor?.getPath()
+      if @diffs = atom.project.getRepositories()[0]?.getLineDiffs(path, @editor.getText())
         @addDecorations(@diffs)
 
   addDecorations: (diffs) ->
@@ -115,12 +108,10 @@ class GitDiffView
     return
 
   removeDecorations: ->
-    return unless @markers?
     marker.destroy() for marker in @markers
-    @markers = null
+    @markers = []
 
   markRange: (startRow, endRow, klass) ->
     marker = @editor.markBufferRange([[startRow, 0], [endRow, Infinity]], invalidate: 'never')
     @editor.decorateMarker(marker, type: 'gutter', class: klass)
-    @markers ?= []
     @markers.push(marker)
