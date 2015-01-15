@@ -113,5 +113,5 @@ class GitDiffView
 
   markRange: (startRow, endRow, klass) ->
     marker = @editor.markBufferRange([[startRow, 0], [endRow, Infinity]], invalidate: 'never')
-    @editor.decorateMarker(marker, type: 'gutter', class: klass)
+    @editor.decorateMarker(marker, type: 'line-number', class: klass)
     @markers.push(marker)
