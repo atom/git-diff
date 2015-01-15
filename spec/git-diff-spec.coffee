@@ -64,7 +64,7 @@ describe "GitDiff package", ->
 
   describe "when a modified file is opened", ->
     it "highlights the changed lines", ->
-      fs.writeFileSync(atom.project.resolve('sample.txt'), "Some different text.")
+      fs.writeFileSync(atom.project.getDirectories()[0].resolve('sample.txt'), "Some different text.")
       nextTick = false
 
       waitsForPromise ->
