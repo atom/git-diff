@@ -34,6 +34,10 @@ class GitDiffView
     @subscriptions.add atom.config.onDidChange 'editor.showLineNumbers', =>
       @updateIconDecoration()
 
+    editorElement = atom.views.getView(@editor)
+    @subscriptions.add editorElement.onDidAttach =>
+      @updateIconDecoration()
+
     @updateIconDecoration()
     @scheduleUpdate()
 
