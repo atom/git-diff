@@ -1,4 +1,4 @@
-GitDiffView = require './git-diff-view'
+GitDiffView = null
 DiffListView = null
 
 diffListView = null
@@ -17,6 +17,7 @@ module.exports =
     atom.workspace.observeTextEditors (editor) ->
       return if atom.project.getRepositories().length is 0
 
+      GitDiffView ?= require './git-diff-view'
       new GitDiffView(editor)
       atom.commands.add(atom.views.getView(editor), 'git-diff:toggle-diff-list', toggleDiffList)
 
