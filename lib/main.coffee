@@ -19,7 +19,8 @@ module.exports =
 
       GitDiffView ?= require './git-diff-view'
       new GitDiffView(editor)
-      atom.commands.add(atom.views.getView(editor), 'git-diff:toggle-diff-list', toggleDiffList)
+
+    atom.commands.add('atom-text-editor', 'git-diff:toggle-diff-list', toggleDiffList)
 
   deactivate: ->
     diffListView?.cancel()
