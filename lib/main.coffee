@@ -15,7 +15,7 @@ module.exports =
 
   activate: ->
     atom.workspace.observeTextEditors (editor) ->
-      return if atom.project.getRepositories().length is 0
+      return unless atom.project.getRepositories()[0]?
 
       new GitDiffView(editor)
       atom.commands.add(atom.views.getView(editor), 'git-diff:toggle-diff-list', toggleDiffList)
