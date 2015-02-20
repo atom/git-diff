@@ -9,14 +9,16 @@ describe "GitDiff package", ->
     spyOn(window, 'setImmediate').andCallFake (fn) -> fn()
 
     projectPath = temp.mkdirSync('git-diff-spec-')
+    otherPath = temp.mkdirSync('some-other-path-')
+
     fs.copySync(path.join(__dirname, 'fixtures', 'working-dir'), projectPath)
     fs.moveSync(path.join(projectPath, 'git.git'), path.join(projectPath, '.git'))
-    atom.project.setPaths([projectPath])
+    atom.project.setPaths([otherPath, projectPath])
 
     jasmine.attachToDOM(atom.views.getView(atom.workspace))
 
     waitsForPromise ->
-      atom.workspace.open('sample.js')
+      atom.workspace.open(path.join(projectPath, 'sample.js'))
 
     runs ->
       editor = atom.workspace.getActiveTextEditor()
@@ -64,11 +66,11 @@ describe "GitDiff package", ->
 
   describe "when a modified file is opened", ->
     it "highlights the changed lines", ->
-      fs.writeFileSync(atom.project.getDirectories()[0].resolve('sample.txt'), "Some different text.")
+      fs.writeFileSync(path.join(projectPath, 'sample.txt'), "Some different text.")
       nextTick = false
 
       waitsForPromise ->
-        atom.workspace.open('sample.txt')
+        atom.workspace.open(path.join(projectPath, 'sample.txt'))
 
       runs ->
         editorView = atom.views.getView(atom.workspace.getActiveTextEditor())

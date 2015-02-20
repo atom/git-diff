@@ -1,4 +1,5 @@
 {CompositeDisposable} = require 'atom'
+{repositoryForPath} = require './helpers'
 
 module.exports =
 class GitDiffView
@@ -10,10 +11,10 @@ class GitDiffView
     @subscriptions.add(@editor.onDidStopChanging(@updateDiffs))
     @subscriptions.add(@editor.onDidChangePath(@updateDiffs))
 
-    if repository = atom.project.getRepositories()[0]
-      @subscriptions.add repository.onDidChangeStatuses =>
+    if @repository = repositoryForPath(@editor.getPath())
+      @subscriptions.add @repository.onDidChangeStatuses =>
         @scheduleUpdate()
-      @subscriptions.add repository.onDidChangeStatus (changedPath) =>
+      @subscriptions.add @repository.onDidChangeStatus (changedPath) =>
         @scheduleUpdate() if changedPath is @editor.getPath()
 
     @subscriptions.add @editor.onDidDestroy =>
@@ -96,7 +97,7 @@ class GitDiffView
 
     @removeDecorations()
     if path = @editor?.getPath()
-      if @diffs = atom.project.getRepositories()[0]?.getLineDiffs(path, @editor.getText())
+      if @diffs = @repository?.getLineDiffs(path, @editor.getText())
         @addDecorations(@diffs)
 
   addDecorations: (diffs) ->
