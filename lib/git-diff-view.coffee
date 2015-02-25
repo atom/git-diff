@@ -11,11 +11,8 @@ class GitDiffView
     @subscriptions.add(@editor.onDidStopChanging(@updateDiffs))
     @subscriptions.add(@editor.onDidChangePath(@updateDiffs))
 
-    if @repository = repositoryForPath(@editor.getPath())
-      @subscriptions.add @repository.onDidChangeStatuses =>
-        @scheduleUpdate()
-      @subscriptions.add @repository.onDidChangeStatus (changedPath) =>
-        @scheduleUpdate() if changedPath is @editor.getPath()
+    @subscribeToRepository()
+    @subscriptions.add atom.project.onDidChangePaths => @subscribeToRepository()
 
     @subscriptions.add @editor.onDidDestroy =>
       @cancelUpdate()
@@ -84,6 +81,13 @@ class GitDiffView
     if lineNumber >= 0
       @editor.setCursorBufferPosition([lineNumber, 0])
       @editor.moveToFirstCharacterOfLine()
+
+  subscribeToRepository: ->
+    if @repository = repositoryForPath(@editor.getPath())
+      @subscriptions.add @repository.onDidChangeStatuses =>
+        @scheduleUpdate()
+      @subscriptions.add @repository.onDidChangeStatus (changedPath) =>
+        @scheduleUpdate() if changedPath is @editor.getPath()
 
   cancelUpdate: ->
     clearImmediate(@immediateId)

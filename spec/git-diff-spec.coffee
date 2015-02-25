@@ -85,6 +85,12 @@ describe "GitDiff package", ->
         expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
         expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveClass('line-number-0')
 
+  describe "when the project paths change", ->
+    it "doesn't try to use the destroyed git repository", ->
+      editor.deleteLine()
+      atom.project.setPaths([temp.mkdirSync("no-repository")])
+      advanceClock(editor.getBuffer().stoppedChangingDelay)
+
   describe "move-to-next-diff/move-to-previous-diff events", ->
     it "moves the cursor to first character of the next/previous diff line", ->
       editor.insertText('a')
