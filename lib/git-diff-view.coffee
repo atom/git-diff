@@ -107,7 +107,7 @@ class GitDiffView
   addDecorations: (diffs) ->
     for {oldStart, newStart, oldLines, newLines} in diffs
       startRow = newStart - 1
-      endRow = newStart + newLines - 2
+      endRow = newStart + newLines - 1
       if oldLines is 0 and newLines > 0
         @markRange(startRow, endRow, 'git-line-added')
       else if newLines is 0 and oldLines > 0
@@ -121,6 +121,6 @@ class GitDiffView
     @markers = []
 
   markRange: (startRow, endRow, klass) ->
-    marker = @editor.markBufferRange([[startRow, 0], [endRow, Infinity]], invalidate: 'never')
+    marker = @editor.markBufferRange([[startRow, 0], [endRow, 0]], invalidate: 'never')
     @editor.decorateMarker(marker, type: 'line-number', class: klass)
     @markers.push(marker)
