@@ -45,7 +45,7 @@ class DiffListView extends SelectListView
   cancelled: ->
     @panel.hide()
 
-  confirmed: ({newStart})->
+  confirmed: ({newStart}) ->
     @cancel()
 
     bufferRow = if newStart > 0 then newStart - 1 else newStart

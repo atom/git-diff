@@ -37,4 +37,4 @@ describe "git-diff:toggle-diff-list", ->
     editor.setCursorBufferPosition([0, 0])
     diffListView = $(atom.views.getView(atom.workspace)).find('.diff-list-view').view()
     atom.commands.dispatch(diffListView.element, 'core:confirm')
-    expect(editor.getCursorBufferPosition()).toEqual [4,4]
+    expect(editor.getCursorBufferPosition()).toEqual [4, 4]
