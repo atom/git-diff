@@ -33,7 +33,7 @@ describe "GitDiff package", ->
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
       expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
-      expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveClass('line-number-0')
+      expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveData("buffer-row", 0)
 
   describe "when the editor has added lines", ->
     it "highlights the added lines", ->
@@ -43,7 +43,7 @@ describe "GitDiff package", ->
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
       expect(editorView.rootElement.querySelectorAll('.git-line-added').length).toBe 1
-      expect(editorView.rootElement.querySelector('.git-line-added')).toHaveClass('line-number-1')
+      expect(editorView.rootElement.querySelector('.git-line-added')).toHaveData("buffer-row", 1)
 
   describe "when the editor has removed lines", ->
     it "highlights the line preceeding the deleted lines", ->
@@ -52,7 +52,7 @@ describe "GitDiff package", ->
       editor.deleteLine()
       advanceClock(editor.getBuffer().stoppedChangingDelay)
       expect(editorView.rootElement.querySelectorAll('.git-line-removed').length).toBe 1
-      expect(editorView.rootElement.querySelector('.git-line-removed')).toHaveClass('line-number-4')
+      expect(editorView.rootElement.querySelector('.git-line-removed')).toHaveData("buffer-row", 4)
 
   describe "when a modified line is restored to the HEAD version contents", ->
     it "removes the diff highlight", ->
@@ -83,7 +83,7 @@ describe "GitDiff package", ->
 
       runs ->
         expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
-        expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveClass('line-number-0')
+        expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveData("buffer-row", 0)
 
   describe "when the project paths change", ->
     it "doesn't try to use the destroyed git repository", ->
