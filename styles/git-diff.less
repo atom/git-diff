@@ -31,6 +31,19 @@ atom-text-editor::shadow {
       pointer-events: none;
     }
   }
+  .gutter.git-diff-background .line-number {
+    &.git-line-modified {
+      background-color: darken( @syntax-color-modified, 40% );
+    }
+
+    &.git-line-added {
+      background-color: darken( @syntax-color-added, 50% );
+    }
+
+    &.git-line-removed {
+      // background-color: darken( @syntax-color-removed, 20% );
+    }
+  }
   .gutter.git-diff-icon .line-number {
     width: 100%;
     border-left: none;

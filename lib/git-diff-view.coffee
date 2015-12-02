@@ -26,16 +26,22 @@ class GitDiffView
     @subscriptions.add atom.commands.add editorView, 'git-diff:move-to-previous-diff', =>
       @moveToPreviousDiff()
 
+    @subscriptions.add atom.config.onDidChange 'git-diff.highlightBackgroundInEditorGutter', =>
+      @updateLineNumberBackground()
+
     @subscriptions.add atom.config.onDidChange 'git-diff.showIconsInEditorGutter', =>
       @updateIconDecoration()
 
     @subscriptions.add atom.config.onDidChange 'editor.showLineNumbers', =>
+      @updateLineNumberBackground()
       @updateIconDecoration()
 
     editorElement = atom.views.getView(@editor)
     @subscriptions.add editorElement.onDidAttach =>
+      @updateLineNumberBackground()
       @updateIconDecoration()
 
+    @updateLineNumberBackground()
     @updateIconDecoration()
     @scheduleUpdate()
 
@@ -55,6 +61,13 @@ class GitDiffView
     nextDiffLineNumber = firstDiffLineNumber unless nextDiffLineNumber?
 
     @moveToLineNumber(nextDiffLineNumber)
+
+  updateLineNumberBackground: ->
+    gutter = atom.views.getView(@editor).rootElement?.querySelector('.gutter')
+    if atom.config.get('editor.showLineNumbers') and atom.config.get('git-diff.highlightBackgroundInEditorGutter')
+      gutter?.classList.add('git-diff-background')
+    else
+      gutter?.classList.remove('git-diff-background')
 
   updateIconDecoration: ->
     gutter = atom.views.getView(@editor).rootElement?.querySelector('.gutter')

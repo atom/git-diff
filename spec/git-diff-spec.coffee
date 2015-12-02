@@ -121,6 +121,24 @@ describe "GitDiff package", ->
       atom.commands.dispatch(editorView, 'git-diff:move-to-previous-diff')
       expect(editor.getCursorBufferPosition()).toEqual [4, 4]
 
+  describe "when the highlightBackgroundInEditorGutter config option is true", ->
+    beforeEach ->
+      atom.config.set 'git-diff.highlightBackgroundInEditorGutter', true
+
+    it "the gutter has a git-diff-background class", ->
+      expect(editorView.rootElement.querySelector('.gutter')).toHaveClass 'git-diff-background'
+
+    it "keeps the git-diff-background class when editor.showLineNumbers is toggled", ->
+      atom.config.set 'editor.showLineNumbers', false
+      expect(editorView.rootElement.querySelector('.gutter')).not.toHaveClass 'git-diff-background'
+
+      atom.config.set 'editor.showLineNumbers', true
+      expect(editorView.rootElement.querySelector('.gutter')).toHaveClass 'git-diff-background'
+
+    it "removes the git-diff-background class when the highlightBackgroundInEditorGutter config option set to false", ->
+      atom.config.set 'git-diff.highlightBackgroundInEditorGutter', false
+      expect(editorView.rootElement.querySelector('.gutter')).not.toHaveClass 'git-diff-background'
+
   describe "when the showIconsInEditorGutter config option is true", ->
     beforeEach ->
       atom.config.set 'git-diff.showIconsInEditorGutter', true

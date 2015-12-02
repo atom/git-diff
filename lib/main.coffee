@@ -9,6 +9,10 @@ toggleDiffList = ->
 
 module.exports =
   config:
+    highlightBackgroundInEditorGutter:
+      type: 'boolean'
+      default: false
+      description: 'Highlight the background color in the editor\'s gutter.'
     showIconsInEditorGutter:
       type: 'boolean'
       default: false
