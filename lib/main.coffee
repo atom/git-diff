@@ -8,12 +8,6 @@ toggleDiffList = ->
   diffListView.toggle()
 
 module.exports =
-  config:
-    showIconsInEditorGutter:
-      type: 'boolean'
-      default: false
-      description: 'Show colored icons for added (`+`), modified (`·`) and removed (`-`) lines in the editor\'s gutter, instead of colored markers (`|`).'
-
   activate: ->
     atom.workspace.observeTextEditors (editor) ->
       new GitDiffView(editor)
