@@ -33,7 +33,7 @@ describe "GitDiff package", ->
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
       waitsFor ->
-        editorView.rootElement.querySelectorAll('.git-line-modified').length == 1
+        editorView.rootElement.querySelectorAll('.git-line-modified').length is 1
       runs ->
         expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
         expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveData("buffer-row", 0)
@@ -46,7 +46,7 @@ describe "GitDiff package", ->
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
       waitsFor ->
-        editorView.rootElement.querySelectorAll('.git-line-added').length == 1
+        editorView.rootElement.querySelectorAll('.git-line-added').length is 1
       runs ->
         expect(editorView.rootElement.querySelectorAll('.git-line-added').length).toBe 1
         expect(editorView.rootElement.querySelector('.git-line-added')).toHaveData("buffer-row", 1)
@@ -58,7 +58,7 @@ describe "GitDiff package", ->
       editor.deleteLine()
       advanceClock(editor.getBuffer().stoppedChangingDelay)
       waitsFor ->
-        editorView.rootElement.querySelectorAll('.git-line-removed').length == 1
+        editorView.rootElement.querySelectorAll('.git-line-removed').length is 1
       runs ->
         expect(editorView.rootElement.querySelectorAll('.git-line-removed').length).toBe 1
         expect(editorView.rootElement.querySelector('.git-line-removed')).toHaveData("buffer-row", 4)
@@ -69,13 +69,13 @@ describe "GitDiff package", ->
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
       waitsFor ->
-        editorView.rootElement.querySelectorAll('.git-line-modified').length == 1
+        editorView.rootElement.querySelectorAll('.git-line-modified').length is 1
       runs ->
         expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
         editor.backspace()
         advanceClock(editor.getBuffer().stoppedChangingDelay)
         waitsFor ->
-          editorView.rootElement.querySelectorAll('.git-line-modified').length == 0
+          editorView.rootElement.querySelectorAll('.git-line-modified').length is 0
         runs ->
           expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 0
 
@@ -90,7 +90,7 @@ describe "GitDiff package", ->
         editorView = atom.views.getView(atom.workspace.getActiveTextEditor())
 
       waitsFor ->
-        editorView.rootElement.querySelectorAll('.git-line-modified').length == 1
+        editorView.rootElement.querySelectorAll('.git-line-modified').length is 1
       runs ->
         expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
         expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveData("buffer-row", 0)
