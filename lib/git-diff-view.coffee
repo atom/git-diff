@@ -105,7 +105,7 @@ class GitDiffView
           @removeDecorations()
           @diffs = diffs
           @addDecorations(@diffs)
-        .catch (e) =>
+        .catch (e) ->
           console.error('Error getting line diffs for ' + path + ':')
           console.error(e)
 

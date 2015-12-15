@@ -33,12 +33,12 @@ class DiffListView extends SelectListView
     repo = repositoryForPath(path)
     repo?.getLineDiffs(path, @editor.getText())
       .then (diffs) =>
-        diffs = diffs || []
+        diffs = diffs or []
         for diff in diffs
           bufferRow = if diff.newStart > 0 then diff.newStart - 1 else diff.newStart
           diff.lineText = @editor.lineTextForBufferRow(bufferRow)?.trim() ? ''
         @setItems(diffs)
-      .catch (e) =>
+      .catch (e) ->
         console.error('Error getting line diffs:')
         console.log(e)
 
