@@ -83,7 +83,7 @@ class GitDiffView
       @editor.moveToFirstCharacterOfLine()
 
   subscribeToRepository: ->
-    if @repository = repositoryForPath(@editor.getPath()).async
+    if @repository = repositoryForPath(@editor.getPath())
       @subscriptions.add @repository.onDidChangeStatuses =>
         @scheduleUpdate()
       @subscriptions.add @repository.onDidChangeStatus (changedPath) =>

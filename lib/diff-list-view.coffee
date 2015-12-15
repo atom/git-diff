@@ -31,7 +31,7 @@ class DiffListView extends SelectListView
   populate: ->
     path = @editor.getPath()
     repo = repositoryForPath(path)
-    repo?.async.getLineDiffs(path, @editor.getText())
+    repo?.getLineDiffs(path, @editor.getText())
       .then (diffs) =>
         diffs = diffs || []
         for diff in diffs
