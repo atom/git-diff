@@ -32,8 +32,11 @@ describe "GitDiff package", ->
       expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 0
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
-      expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
-      expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveData("buffer-row", 0)
+      waitsFor ->
+        editorView.rootElement.querySelectorAll('.git-line-modified').length == 1
+      runs ->
+        expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
+        expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveData("buffer-row", 0)
 
   describe "when the editor has added lines", ->
     it "highlights the added lines", ->
@@ -42,8 +45,11 @@ describe "GitDiff package", ->
       editor.insertNewline()
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
-      expect(editorView.rootElement.querySelectorAll('.git-line-added').length).toBe 1
-      expect(editorView.rootElement.querySelector('.git-line-added')).toHaveData("buffer-row", 1)
+      waitsFor ->
+        editorView.rootElement.querySelectorAll('.git-line-added').length == 1
+      runs ->
+        expect(editorView.rootElement.querySelectorAll('.git-line-added').length).toBe 1
+        expect(editorView.rootElement.querySelector('.git-line-added')).toHaveData("buffer-row", 1)
 
   describe "when the editor has removed lines", ->
     it "highlights the line preceeding the deleted lines", ->
@@ -51,23 +57,31 @@ describe "GitDiff package", ->
       editor.setCursorBufferPosition([5])
       editor.deleteLine()
       advanceClock(editor.getBuffer().stoppedChangingDelay)
-      expect(editorView.rootElement.querySelectorAll('.git-line-removed').length).toBe 1
-      expect(editorView.rootElement.querySelector('.git-line-removed')).toHaveData("buffer-row", 4)
+      waitsFor ->
+        editorView.rootElement.querySelectorAll('.git-line-removed').length == 1
+      runs ->
+        expect(editorView.rootElement.querySelectorAll('.git-line-removed').length).toBe 1
+        expect(editorView.rootElement.querySelector('.git-line-removed')).toHaveData("buffer-row", 4)
 
   describe "when a modified line is restored to the HEAD version contents", ->
     it "removes the diff highlight", ->
       expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 0
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
-      expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
-      editor.backspace()
-      advanceClock(editor.getBuffer().stoppedChangingDelay)
-      expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 0
+      waitsFor ->
+        editorView.rootElement.querySelectorAll('.git-line-modified').length == 1
+      runs ->
+        expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
+        editor.backspace()
+        advanceClock(editor.getBuffer().stoppedChangingDelay)
+        waitsFor ->
+          editorView.rootElement.querySelectorAll('.git-line-modified').length == 0
+        runs ->
+          expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 0
 
   describe "when a modified file is opened", ->
     it "highlights the changed lines", ->
       fs.writeFileSync(path.join(projectPath, 'sample.txt'), "Some different text.")
-      nextTick = false
 
       waitsForPromise ->
         atom.workspace.open(path.join(projectPath, 'sample.txt'))
@@ -75,12 +89,8 @@ describe "GitDiff package", ->
       runs ->
         editorView = atom.views.getView(atom.workspace.getActiveTextEditor())
 
-      setImmediate ->
-        nextTick = true
-
       waitsFor ->
-        nextTick
-
+        editorView.rootElement.querySelectorAll('.git-line-modified').length == 1
       runs ->
         expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
         expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveData("buffer-row", 0)
@@ -97,29 +107,33 @@ describe "GitDiff package", ->
       editor.setCursorBufferPosition([5])
       editor.deleteLine()
       advanceClock(editor.getBuffer().stoppedChangingDelay)
+      waitsFor ->
+        editorView.rootElement.querySelectorAll('.git-line-modified').length > 0
+      runs ->
+        editor.setCursorBufferPosition([0])
+        atom.commands.dispatch(editorView, 'git-diff:move-to-next-diff')
+        expect(editor.getCursorBufferPosition()).toEqual [4, 4]
 
-      editor.setCursorBufferPosition([0])
-      atom.commands.dispatch(editorView, 'git-diff:move-to-next-diff')
-      expect(editor.getCursorBufferPosition()).toEqual [4, 4]
-
-      atom.commands.dispatch(editorView, 'git-diff:move-to-previous-diff')
-      expect(editor.getCursorBufferPosition()).toEqual [0, 0]
+        atom.commands.dispatch(editorView, 'git-diff:move-to-previous-diff')
+        expect(editor.getCursorBufferPosition()).toEqual [0, 0]
 
     it "wraps around to the first/last diff in the file", ->
       editor.insertText('a')
       editor.setCursorBufferPosition([5])
       editor.deleteLine()
       advanceClock(editor.getBuffer().stoppedChangingDelay)
+      waitsFor ->
+        editorView.rootElement.querySelectorAll('.git-line-modified').length > 0
+      runs ->
+        editor.setCursorBufferPosition([0])
+        atom.commands.dispatch(editorView, 'git-diff:move-to-next-diff')
+        expect(editor.getCursorBufferPosition()).toEqual [4, 4]
 
-      editor.setCursorBufferPosition([0])
-      atom.commands.dispatch(editorView, 'git-diff:move-to-next-diff')
-      expect(editor.getCursorBufferPosition()).toEqual [4, 4]
+        atom.commands.dispatch(editorView, 'git-diff:move-to-next-diff')
+        expect(editor.getCursorBufferPosition()).toEqual [0, 0]
 
-      atom.commands.dispatch(editorView, 'git-diff:move-to-next-diff')
-      expect(editor.getCursorBufferPosition()).toEqual [0, 0]
-
-      atom.commands.dispatch(editorView, 'git-diff:move-to-previous-diff')
-      expect(editor.getCursorBufferPosition()).toEqual [4, 4]
+        atom.commands.dispatch(editorView, 'git-diff:move-to-previous-diff')
+        expect(editor.getCursorBufferPosition()).toEqual [4, 4]
 
   describe "when the showIconsInEditorGutter config option is true", ->
     beforeEach ->
