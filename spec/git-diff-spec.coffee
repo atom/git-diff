@@ -74,10 +74,11 @@ describe "GitDiff package", ->
         expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
         editor.backspace()
         advanceClock(editor.getBuffer().stoppedChangingDelay)
-        waitsFor ->
-          editorView.rootElement.querySelectorAll('.git-line-modified').length is 0
-        runs ->
-          expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 0
+
+      waitsFor ->
+        editorView.rootElement.querySelectorAll('.git-line-modified').length is 0
+      runs ->
+        expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 0
 
   describe "when a modified file is opened", ->
     it "highlights the changed lines", ->
