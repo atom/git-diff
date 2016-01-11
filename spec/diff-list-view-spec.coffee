@@ -37,7 +37,7 @@ describe "git-diff:toggle-diff-list", ->
     waitsFor ->
       diffListView.list.children().text() is expectedLine
     runs ->
-      expect(diffListView.list.children().text()).toBe "while(items.length > 0) {a-5,1 +5,1"
+      expect(diffListView.list.children().text()).toBe expectedLine
 
   it "moves the cursor to the selected hunk", ->
     editor.setCursorBufferPosition([0, 0])
