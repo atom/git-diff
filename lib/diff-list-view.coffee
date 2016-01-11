@@ -40,7 +40,7 @@ class DiffListView extends SelectListView
         @setItems(diffs)
       .catch (e) ->
         console.error('Error getting line diffs:')
-        console.log(e)
+        console.error(e)
 
   toggle: ->
     if @panel.isVisible()
