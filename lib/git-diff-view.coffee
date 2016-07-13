@@ -101,11 +101,6 @@ class GitDiffView
 
     if path = @editor?.getPath()
       @repository?.getLineDiffs(path, @editor.getText())
-        .catch (e) ->
-          if e.message.match(/does not exist in the given tree/)
-            []
-          else
-            Promise.reject(e)
         .then (diffs) =>
           @removeDecorations()
           @diffs = diffs
