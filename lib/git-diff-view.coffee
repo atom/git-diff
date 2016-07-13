@@ -99,15 +99,10 @@ class GitDiffView
   updateDiffs: =>
     return if @editor.isDestroyed()
 
+    @removeDecorations()
     if path = @editor?.getPath()
-      @repository?.getLineDiffs(path, @editor.getText())
-        .then (diffs) =>
-          @removeDecorations()
-          @diffs = diffs
-          @addDecorations(@diffs)
-        .catch (e) ->
-          console.error('Error getting line diffs for ' + path + ':')
-          console.error(e)
+      if @diffs = @repository?.getLineDiffs(path, @editor.getText())
+        @addDecorations(@diffs)
 
   addDecorations: (diffs) ->
     for {oldStart, newStart, oldLines, newLines} in diffs
