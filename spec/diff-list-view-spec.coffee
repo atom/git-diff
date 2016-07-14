@@ -29,21 +29,12 @@ describe "git-diff:toggle-diff-list", ->
   afterEach ->
     diffListView.cancel()
 
-  expectedLine = "while(items.length > 0) {a-5,1 +5,1"
-
   it "shows a list of all diff hunks", ->
     diffListView = $(atom.views.getView(atom.workspace)).find('.diff-list-view').view()
-
-    waitsFor ->
-      diffListView.list.children().text() is expectedLine
-    runs ->
-      expect(diffListView.list.children().text()).toBe expectedLine
+    expect(diffListView.list.children().text()).toBe "while(items.length > 0) {a-5,1 +5,1"
 
   it "moves the cursor to the selected hunk", ->
     editor.setCursorBufferPosition([0, 0])
     diffListView = $(atom.views.getView(atom.workspace)).find('.diff-list-view').view()
-    waitsFor ->
-      diffListView.list.children().text() is expectedLine
-    runs ->
-      atom.commands.dispatch(diffListView.element, 'core:confirm')
-      expect(editor.getCursorBufferPosition()).toEqual [4, 4]
+    atom.commands.dispatch(diffListView.element, 'core:confirm')
+    expect(editor.getCursorBufferPosition()).toEqual [4, 4]

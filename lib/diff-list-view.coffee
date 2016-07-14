@@ -29,18 +29,11 @@ class DiffListView extends SelectListView
         @div "-#{oldStart},#{oldLines} +#{newStart},#{newLines}", class: 'secondary-line'
 
   populate: ->
-    path = @editor.getPath()
-    repo = repositoryForPath(path)
-    repo?.getLineDiffs(path, @editor.getText())
-      .then (diffs) =>
-        diffs = diffs or []
-        for diff in diffs
-          bufferRow = if diff.newStart > 0 then diff.newStart - 1 else diff.newStart
-          diff.lineText = @editor.lineTextForBufferRow(bufferRow)?.trim() ? ''
-        @setItems(diffs)
-      .catch (e) ->
-        console.error('Error getting line diffs:')
-        console.error(e)
+    diffs = repositoryForPath(@editor.getPath())?.getLineDiffs(@editor.getPath(), @editor.getText()) ? []
+    for diff in diffs
+      bufferRow = if diff.newStart > 0 then diff.newStart - 1 else diff.newStart
+      diff.lineText = @editor.lineTextForBufferRow(bufferRow)?.trim() ? ''
+    @setItems(diffs)
 
   toggle: ->
     if @panel.isVisible()
