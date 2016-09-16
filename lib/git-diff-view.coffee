@@ -105,7 +105,7 @@ class GitDiffView
         @addDecorations(@diffs)
 
   addDecorations: (diffs) ->
-    for {oldStart, newStart, oldLines, newLines} in diffs
+    for {newStart, oldLines, newLines} in diffs
       startRow = newStart - 1
       endRow = newStart + newLines - 1
       if oldLines is 0 and newLines > 0
