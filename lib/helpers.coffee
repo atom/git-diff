@@ -15,5 +15,5 @@ module.exports =
   equalDiffs: (diff1, diff2) ->
     if not diff1 or not diff2
       return false
-    diff1.newLines == diff2.newLines and diff1.newStart == diff2.newStart and
-      diff1.oldLines == diff2.oldLines and diff1.oldStart == diff2.oldStart
+    diff1.newLines is diff2.newLines and diff1.newStart is diff2.newStart and
+      diff1.oldLines is diff2.oldLines and diff1.oldStart is diff2.oldStart

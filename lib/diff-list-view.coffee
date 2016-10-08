@@ -27,10 +27,10 @@ class DiffListView extends SelectListView
       @li class: 'two-lines', =>
         @div class: 'primary-line', =>
           for richDiff in richLines
-            if richDiff.newLineNumber == -1
+            if richDiff.newLineNumber is -1
               # removed line, add '-' and mark as deleted
               @code "- #{richDiff.line}", class: 'diff-line removed'
-            else if richDiff.oldLineNumber == -1
+            else if richDiff.oldLineNumber is -1
               # added line, prepend '+' and mark as new
               @code "+ #{richDiff.line}", class: 'diff-line added'
           if exceedsLimit
