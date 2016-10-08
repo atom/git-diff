@@ -22,7 +22,6 @@ class DiffListView extends SelectListView
     @panel.show()
     @focusFilterEditor()
 
-  # add some random comment
   viewForItem: ({oldStart, newStart, oldLines, newLines, lineText, exceedsLimit, richLines}) ->
     $$ ->
       @li class: 'two-lines', =>
