@@ -28,7 +28,7 @@ class DiffListView extends SelectListView
         @div class: 'primary-line', =>
           for richDiff in richLines
             if richDiff.newLineNumber is -1
-              # removed line, add '-' and mark as deleted
+              # removed line, prepend '-' and mark as deleted
               @code "- #{richDiff.line}", class: 'diff-line removed'
             else if richDiff.oldLineNumber is -1
               # added line, prepend '+' and mark as new
@@ -45,11 +45,15 @@ class DiffListView extends SelectListView
     for diff in diffs
       diff.richLines = [] # corresponding lines for this range diff
       diff.exceedsLimit = false # whether or not all lines are included
-      for richDiff in richDiffs
-        if not diff.exceedsLimit and equalDiffs(diff, richDiff)
-          diff.richLines.push richDiff
-          if diff.richLines.length >= limit
-            diff.exceedsLimit = true
+    i = j = 0
+    while i < diffs.length and j < richDiffs.length
+      if equalDiffs(diffs[i], richDiffs[j])
+        if not diffs[i].exceedsLimit
+          diffs[i].richLines.push richDiffs[j]
+          diffs[i].exceedsLimit = diffs[i].richLines.length >= limit
+        j += 1
+      else
+        i += 1 # current rich diff belongs to the next diff
     @setItems(diffs)
 
   toggle: ->
