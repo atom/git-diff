@@ -1,6 +1,6 @@
 {
   "name": "git-diff",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "main": "./lib/main",
   "description": "Marks lines in the editor gutter that have been added, edited, or deleted since the last commit.",
   "repository": "https://github.com/atom/git-diff",
