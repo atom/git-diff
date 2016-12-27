@@ -68,3 +68,17 @@ atom-text-editor {
     }
   }
 }
+
+.diff-line {
+  background-color: transparent;
+  white-space: pre;
+  text-overflow: ellipsis;
+
+  &.added {
+    color: @syntax-color-added;
+  }
+
+  &.removed {
+    color: @syntax-color-removed;
+  }
+}
