@@ -12,5 +12,5 @@ module.exports =
         diffListView.toggle()
 
   deactivate: ->
-    diffListView?.cancel()
+    diffListView?.destroy()
     diffListView = null
