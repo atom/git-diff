@@ -1,17 +1,15 @@
 GitDiffView = require './git-diff-view'
-DiffListView = null
+DiffListView = require './diff-list-view'
 
 diffListView = null
-toggleDiffList = ->
-  DiffListView ?= require './diff-list-view'
-  diffListView ?= new DiffListView()
-  diffListView.toggle()
 
 module.exports =
   activate: ->
     atom.workspace.observeTextEditors (editor) ->
       new GitDiffView(editor)
-      atom.commands.add(atom.views.getView(editor), 'git-diff:toggle-diff-list', toggleDiffList)
+      atom.commands.add atom.views.getView(editor), 'git-diff:toggle-diff-list', ->
+        diffListView ?= new DiffListView()
+        diffListView.toggle()
 
   deactivate: ->
     diffListView?.cancel()
