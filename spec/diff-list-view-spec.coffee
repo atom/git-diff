@@ -1,7 +1,7 @@
 path = require 'path'
 fs = require 'fs-plus'
 temp = require 'temp'
-{$} = require 'atom-space-pen-views'
+etch = require('etch')
 
 describe "git-diff:toggle-diff-list", ->
   [diffListView, editor] = []
@@ -26,15 +26,14 @@ describe "git-diff:toggle-diff-list", ->
       editor.insertText('a')
       atom.commands.dispatch(atom.views.getView(editor), 'git-diff:toggle-diff-list')
 
-  afterEach ->
-    diffListView.cancel()
+    waitsForPromise ->
+      etch.getScheduler().getNextUpdatePromise()
 
   it "shows a list of all diff hunks", ->
-    diffListView = $(atom.views.getView(atom.workspace)).find('.diff-list-view').view()
-    expect(diffListView.list.children().text()).toBe "while(items.length > 0) {a-5,1 +5,1"
+    diffListView = document.querySelector('.diff-list-view')
+    expect(diffListView.textContent).toBe "while(items.length > 0) {a-5,1 +5,1"
 
   it "moves the cursor to the selected hunk", ->
     editor.setCursorBufferPosition([0, 0])
-    diffListView = $(atom.views.getView(atom.workspace)).find('.diff-list-view').view()
-    atom.commands.dispatch(diffListView.element, 'core:confirm')
+    atom.commands.dispatch(document.querySelector('.diff-list-view'), 'core:confirm')
     expect(editor.getCursorBufferPosition()).toEqual [4, 4]
