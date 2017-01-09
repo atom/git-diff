@@ -82,8 +82,10 @@ class GitDiffView
       @editor.setCursorBufferPosition([lineNumber, 0])
       @editor.moveToFirstCharacterOfLine()
 
-  subscribeToRepository: ->
-    if @repository = repositoryForPath(@editor.getPath())
+  subscribeToRepository: =>
+    repoPromise = repositoryForPath(@editor.getPath())
+    repoPromise.then (val) =>
+      @repository = val
       @subscriptions.add @repository.onDidChangeStatuses =>
         @scheduleUpdate()
       @subscriptions.add @repository.onDidChangeStatus (changedPath) =>
