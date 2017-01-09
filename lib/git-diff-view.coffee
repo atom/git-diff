@@ -85,11 +85,12 @@ class GitDiffView
   subscribeToRepository: =>
     repoPromise = repositoryForPath(@editor.getPath())
     repoPromise.then (val) =>
-      @repository = val
-      @subscriptions.add @repository.onDidChangeStatuses =>
-        @scheduleUpdate()
-      @subscriptions.add @repository.onDidChangeStatus (changedPath) =>
-        @scheduleUpdate() if changedPath is @editor.getPath()
+      if val?
+        @repository = val
+        @subscriptions.add @repository.onDidChangeStatuses =>
+          @scheduleUpdate()
+        @subscriptions.add @repository.onDidChangeStatus (changedPath) =>
+          @scheduleUpdate() if changedPath is @editor.getPath()
 
   cancelUpdate: ->
     clearImmediate(@immediateId)
