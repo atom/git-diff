@@ -81,6 +81,8 @@ describe "GitDiff package", ->
       waitsFor ->
         nextTick
 
+      waits 200
+
       runs ->
         expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
         expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveData("buffer-row", 0)
