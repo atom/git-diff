@@ -83,6 +83,7 @@ class GitDiffView
       @editor.moveToFirstCharacterOfLine()
 
   subscribeToRepository: =>
+    @repository = null
     repoPromise = repositoryForPath(@editor.getPath())
     repoPromise.then (val) =>
       if val?
