@@ -26,8 +26,9 @@ describe "git-diff:toggle-diff-list", ->
       editor.insertText('a')
       atom.commands.dispatch(atom.views.getView(editor), 'git-diff:toggle-diff-list')
 
-    waitsForPromise ->
-      etch.getScheduler().getNextUpdatePromise()
+    waitsFor ->
+      diffListView = document.querySelector('.diff-list-view')
+      diffListView?.querySelectorAll('li').length > 0
 
   it "shows a list of all diff hunks", ->
     diffListView = document.querySelector('.diff-list-view')
