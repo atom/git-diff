@@ -29,40 +29,40 @@ describe "GitDiff package", ->
 
   describe "when the editor has modified lines", ->
     it "highlights the modified lines", ->
-      expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 0
+      expect(editorView.querySelectorAll('.git-line-modified').length).toBe 0
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
-      expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
-      expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveData("buffer-row", 0)
+      expect(editorView.querySelectorAll('.git-line-modified').length).toBe 1
+      expect(editorView.querySelector('.git-line-modified')).toHaveData("buffer-row", 0)
 
   describe "when the editor has added lines", ->
     it "highlights the added lines", ->
-      expect(editorView.rootElement.querySelectorAll('.git-line-added').length).toBe 0
+      expect(editorView.querySelectorAll('.git-line-added').length).toBe 0
       editor.moveToEndOfLine()
       editor.insertNewline()
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
-      expect(editorView.rootElement.querySelectorAll('.git-line-added').length).toBe 1
-      expect(editorView.rootElement.querySelector('.git-line-added')).toHaveData("buffer-row", 1)
+      expect(editorView.querySelectorAll('.git-line-added').length).toBe 1
+      expect(editorView.querySelector('.git-line-added')).toHaveData("buffer-row", 1)
 
   describe "when the editor has removed lines", ->
     it "highlights the line preceeding the deleted lines", ->
-      expect(editorView.rootElement.querySelectorAll('.git-line-added').length).toBe 0
+      expect(editorView.querySelectorAll('.git-line-added').length).toBe 0
       editor.setCursorBufferPosition([5])
       editor.deleteLine()
       advanceClock(editor.getBuffer().stoppedChangingDelay)
-      expect(editorView.rootElement.querySelectorAll('.git-line-removed').length).toBe 1
-      expect(editorView.rootElement.querySelector('.git-line-removed')).toHaveData("buffer-row", 4)
+      expect(editorView.querySelectorAll('.git-line-removed').length).toBe 1
+      expect(editorView.querySelector('.git-line-removed')).toHaveData("buffer-row", 4)
 
   describe "when a modified line is restored to the HEAD version contents", ->
     it "removes the diff highlight", ->
-      expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 0
+      expect(editorView.querySelectorAll('.git-line-modified').length).toBe 0
       editor.insertText('a')
       advanceClock(editor.getBuffer().stoppedChangingDelay)
-      expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
+      expect(editorView.querySelectorAll('.git-line-modified').length).toBe 1
       editor.backspace()
       advanceClock(editor.getBuffer().stoppedChangingDelay)
-      expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 0
+      expect(editorView.querySelectorAll('.git-line-modified').length).toBe 0
 
   describe "when a modified file is opened", ->
     it "highlights the changed lines", ->
@@ -82,8 +82,8 @@ describe "GitDiff package", ->
         nextTick
 
       runs ->
-        expect(editorView.rootElement.querySelectorAll('.git-line-modified').length).toBe 1
-        expect(editorView.rootElement.querySelector('.git-line-modified')).toHaveData("buffer-row", 0)
+        expect(editorView.querySelectorAll('.git-line-modified').length).toBe 1
+        expect(editorView.querySelector('.git-line-modified')).toHaveData("buffer-row", 0)
 
   describe "when the project paths change", ->
     it "doesn't try to use the destroyed git repository", ->
@@ -126,15 +126,15 @@ describe "GitDiff package", ->
       atom.config.set 'git-diff.showIconsInEditorGutter', true
 
     it "the gutter has a git-diff-icon class", ->
-      expect(editorView.rootElement.querySelector('.gutter')).toHaveClass 'git-diff-icon'
+      expect(editorView.querySelector('.gutter')).toHaveClass 'git-diff-icon'
 
     it "keeps the git-diff-icon class when editor.showLineNumbers is toggled", ->
       atom.config.set 'editor.showLineNumbers', false
-      expect(editorView.rootElement.querySelector('.gutter')).not.toHaveClass 'git-diff-icon'
+      expect(editorView.querySelector('.gutter')).not.toHaveClass 'git-diff-icon'
 
       atom.config.set 'editor.showLineNumbers', true
-      expect(editorView.rootElement.querySelector('.gutter')).toHaveClass 'git-diff-icon'
+      expect(editorView.querySelector('.gutter')).toHaveClass 'git-diff-icon'
 
     it "removes the git-diff-icon class when the showIconsInEditorGutter config option set to false", ->
       atom.config.set 'git-diff.showIconsInEditorGutter', false
-      expect(editorView.rootElement.querySelector('.gutter')).not.toHaveClass 'git-diff-icon'
+      expect(editorView.querySelector('.gutter')).not.toHaveClass 'git-diff-icon'

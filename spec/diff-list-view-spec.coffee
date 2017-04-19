@@ -31,7 +31,7 @@ describe "git-diff:toggle-diff-list", ->
       diffListView?.querySelectorAll('li').length > 0
 
   it "shows a list of all diff hunks", ->
-    diffListView = document.querySelector('.diff-list-view')
+    diffListView = document.querySelector('.diff-list-view ol')
     expect(diffListView.textContent).toBe "while(items.length > 0) {a-5,1 +5,1"
 
   it "moves the cursor to the selected hunk", ->
