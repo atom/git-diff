@@ -57,7 +57,7 @@ class GitDiffView
     @moveToLineNumber(nextDiffLineNumber)
 
   updateIconDecoration: ->
-    gutter = atom.views.getView(@editor).rootElement?.querySelector('.gutter')
+    gutter = atom.views.getView(@editor).querySelector('.gutter')
     if atom.config.get('editor.showLineNumbers') and atom.config.get('git-diff.showIconsInEditorGutter')
       gutter?.classList.add('git-diff-icon')
     else
