@@ -83,7 +83,10 @@ class GitDiffView
       @editor.moveToFirstCharacterOfLine()
 
   subscribeToRepository: ->
-    if @repository = repositoryForPath(@editor.getPath())
+    unless fileName = @editor.getPath()
+      # Note that fileName may be undefined for `untitled` tab.
+      return
+    if @repository = repositoryForPath(fileName)
       @subscriptions.add @repository.onDidChangeStatuses =>
         @scheduleUpdate()
       @subscriptions.add @repository.onDidChangeStatus (changedPath) =>
