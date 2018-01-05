@@ -121,6 +121,29 @@ describe "GitDiff package", ->
       atom.commands.dispatch(editorView, 'git-diff:move-to-previous-diff')
       expect(editor.getCursorBufferPosition()).toEqual [4, 4]
 
+    describe "when the wrapAroundOnMoveToDiff config option is false", ->
+      beforeEach ->
+        atom.config.set 'git-diff.wrapAroundOnMoveToDiff', false
+
+      it "does not wraps around to the first/last diff in the file", ->
+        editor.insertText('a')
+        editor.setCursorBufferPosition([5])
+        editor.deleteLine()
+        advanceClock(editor.getBuffer().stoppedChangingDelay)
+
+        editor.setCursorBufferPosition([0])
+        atom.commands.dispatch(editorView, 'git-diff:move-to-next-diff')
+        expect(editor.getCursorBufferPosition()).toEqual [4, 4]
+
+        atom.commands.dispatch(editorView, 'git-diff:move-to-next-diff')
+        expect(editor.getCursorBufferPosition()).toEqual [4, 4]
+
+        atom.commands.dispatch(editorView, 'git-diff:move-to-previous-diff')
+        expect(editor.getCursorBufferPosition()).toEqual [0, 0]
+
+        atom.commands.dispatch(editorView, 'git-diff:move-to-previous-diff')
+        expect(editor.getCursorBufferPosition()).toEqual [0, 0]
+
   describe "when the showIconsInEditorGutter config option is true", ->
     beforeEach ->
       atom.config.set 'git-diff.showIconsInEditorGutter', true

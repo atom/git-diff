@@ -52,7 +52,8 @@ class GitDiffView
       firstDiffLineNumber = Math.min(newStart - 1, firstDiffLineNumber)
 
     # Wrap around to the first diff in the file
-    nextDiffLineNumber = firstDiffLineNumber unless nextDiffLineNumber?
+    if atom.config.get('git-diff.wrapAroundOnMoveToDiff') and not nextDiffLineNumber?
+      nextDiffLineNumber = firstDiffLineNumber
 
     @moveToLineNumber(nextDiffLineNumber)
 
@@ -73,7 +74,8 @@ class GitDiffView
       lastDiffLineNumber = Math.max(newStart - 1, lastDiffLineNumber)
 
     # Wrap around to the last diff in the file
-    previousDiffLineNumber = lastDiffLineNumber if previousDiffLineNumber is -1
+    if atom.config.get('git-diff.wrapAroundOnMoveToDiff') and previousDiffLineNumber is -1
+      previousDiffLineNumber = lastDiffLineNumber
 
     @moveToLineNumber(previousDiffLineNumber)
 

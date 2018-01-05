@@ -21,6 +21,11 @@
       "type": "boolean",
       "default": false,
       "description": "Show colored icons for added (`+`), modified (`·`) and removed (`-`) lines in the editor's gutter, instead of colored markers (`|`)."
+    },
+    "wrapAroundOnMoveToDiff": {
+      "type": "boolean",
+      "default": true,
+      "description": "Wraps around to the first/last diff in the file when moving to next/previous diff."
     }
   }
 }
