@@ -29,6 +29,22 @@ atom-text-editor {
       margin-top: -@size;
       pointer-events: none;
     }
+
+    &.git-previous-line-removed:before {
+      @size: 4px;
+
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 0;
+      width: 0;
+      content: " ";
+      border: solid transparent;
+      border-left-color: @syntax-color-removed;
+      border-width: @size;
+      margin-top: -@size;
+      pointer-events: none;
+    }
   }
   .gutter.git-diff-icon .line-number {
     width: 100%;
