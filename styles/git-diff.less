@@ -65,12 +65,18 @@ atom-text-editor {
       color: @syntax-color-added;
     }
 
-    &.git-line-removed:before {
+    &.git-line-removed:before,
+    &.git-previous-line-removed:before {
       border: none; // reset triangle
       content: @dash;
       color: @syntax-color-removed;
       position: relative;
+    }
+    &.git-line-removed:before {
       top: .6em;
+    }
+    &.git-previous-line-removed:before {
+      top: -.6em;
     }
   }
 }
