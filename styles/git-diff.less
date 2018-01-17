@@ -14,12 +14,11 @@ atom-text-editor {
       padding-left: ~"calc(0.5em - 2px)";
     }
 
-    &.git-line-removed:before {
-      @size: 4px;
-
+    @size: 4px;
+    &.git-line-removed:before,
+    &.git-previous-line-removed:before {
       position: absolute;
       left: 0;
-      bottom: -@size;
       height: 0;
       width: 0;
       content: " ";
@@ -29,23 +28,14 @@ atom-text-editor {
       margin-top: -@size;
       pointer-events: none;
     }
-
+    &.git-line-removed:before {
+      bottom: -@size;
+    }
     &.git-previous-line-removed:before {
-      @size: 4px;
-
-      position: absolute;
-      left: 0;
       top: 0;
-      height: 0;
-      width: 0;
-      content: " ";
-      border: solid transparent;
-      border-left-color: @syntax-color-removed;
-      border-width: @size;
-      margin-top: -@size;
-      pointer-events: none;
     }
   }
+
   .gutter.git-diff-icon .line-number {
     width: 100%;
     border-left: none;
