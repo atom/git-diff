@@ -1,6 +1,8 @@
 {CompositeDisposable} = require 'atom'
 {repositoryForPath} = require './helpers'
 
+MAX_BUFFER_LENGTH_TO_DIFF = 2 * 1024 * 1024
+
 module.exports =
 class GitDiffView
   constructor: (@editor) ->
@@ -101,8 +103,13 @@ class GitDiffView
 
     @removeDecorations()
     if path = @editor?.getPath()
-      if @diffs = @repository?.getLineDiffs(path, @editor.getText())
-        @addDecorations(@diffs)
+
+      # TODO - remove this fallback to a private API once Atom 1.25 ships.
+      length = @editor.getBuffer().getLength?() ? @editor.getBuffer().buffer.getLength()
+
+      if length < MAX_BUFFER_LENGTH_TO_DIFF
+        @diffs = @repository?.getLineDiffs(path, @editor.getText())
+        @addDecorations(@diffs) if @diffs
 
   addDecorations: (diffs) ->
     for {newStart, oldLines, newLines} in diffs
