@@ -14,12 +14,11 @@ atom-text-editor {
       padding-left: ~"calc(0.5em - 2px)";
     }
 
-    &.git-line-removed:before {
-      @size: 4px;
-
+    @size: 4px;
+    &.git-line-removed:before,
+    &.git-previous-line-removed:before {
       position: absolute;
       left: 0;
-      bottom: -@size;
       height: 0;
       width: 0;
       content: " ";
@@ -29,7 +28,14 @@ atom-text-editor {
       margin-top: -@size;
       pointer-events: none;
     }
+    &.git-line-removed:before {
+      bottom: -@size;
+    }
+    &.git-previous-line-removed:before {
+      top: 0;
+    }
   }
+
   .gutter.git-diff-icon .line-number {
     width: 100%;
     border-left: none;
@@ -59,12 +65,18 @@ atom-text-editor {
       color: @syntax-color-added;
     }
 
-    &.git-line-removed:before {
+    &.git-line-removed:before,
+    &.git-previous-line-removed:before {
       border: none; // reset triangle
       content: @dash;
       color: @syntax-color-removed;
       position: relative;
+    }
+    &.git-line-removed:before {
       top: .6em;
+    }
+    &.git-previous-line-removed:before {
+      top: -.6em;
     }
   }
 }

@@ -118,7 +118,10 @@ class GitDiffView
       if oldLines is 0 and newLines > 0
         @markRange(startRow, endRow, 'git-line-added')
       else if newLines is 0 and oldLines > 0
-        @markRange(startRow, startRow, 'git-line-removed')
+        if startRow < 0
+          @markRange(0, 0, 'git-previous-line-removed')
+        else
+          @markRange(startRow, startRow, 'git-line-removed')
       else
         @markRange(startRow, endRow, 'git-line-modified')
     return

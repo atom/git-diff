@@ -54,6 +54,15 @@ describe "GitDiff package", ->
       expect(editorView.querySelectorAll('.git-line-removed').length).toBe 1
       expect(editorView.querySelector('.git-line-removed')).toHaveData("buffer-row", 4)
 
+  describe "when the editor has removed the first line", ->
+    it "highlights the line preceeding the deleted lines", ->
+      expect(editorView.querySelectorAll('.git-line-added').length).toBe 0
+      editor.setCursorBufferPosition([0, 0])
+      editor.deleteLine()
+      advanceClock(editor.getBuffer().stoppedChangingDelay)
+      expect(editorView.querySelectorAll('.git-previous-line-removed').length).toBe 1
+      expect(editorView.querySelector('.git-previous-line-removed')).toHaveData("buffer-row", 0)
+
   describe "when a modified line is restored to the HEAD version contents", ->
     it "removes the diff highlight", ->
       expect(editorView.querySelectorAll('.git-line-modified').length).toBe 0
