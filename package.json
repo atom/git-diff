@@ -14,7 +14,22 @@
     "temp": "~0.8.1"
   },
   "devDependencies": {
-    "coffeelint": "^1.9.7"
+    "standard": "^11.0.0"
+  },
+  "standard": {
+    "ignore": [
+      "spec/fixtures/working-dir/sample.js"
+    ],
+    "env": {
+      "atomtest": true,
+      "browser": true,
+      "jasmine": true,
+      "node": true
+    },
+    "globals": [
+      "atom",
+      "snapshotResult"
+    ]
   },
   "configSchema": {
     "showIconsInEditorGutter": {
